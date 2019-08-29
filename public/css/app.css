@@ -1,0 +1,61 @@
+.modal-header{
+  border-bottom: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.modal .modal-content .modal-header{
+  padding: 15px;
+}
+
+.sidebar .nav .nav-item-fixed-bottom{
+  position: absolute;
+  width: 100%;
+  bottom: 10px;
+}
+
+@media(max-width: 991px){
+  .sidebar .nav .nav-item-fixed-bottom{
+    position: relative !important;
+  }
+}
+
+/* Fix light-bootstrap-dashboard */
+button:hover{
+  cursor: pointer;
+}
+
+.card .table tbody td:last-child,
+.card .table thead th:last-child {
+  padding-right: 15px;
+  display: table-cell;
+}
+
+.btn-danger.btn-link,
+.btn-success.btn-link,
+.btn-info.btn-link,
+.btn-primary.btn-link,
+.btn-warning.btn-link{
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+h1, h2, h3, h4, h5{
+  margin: 15px 0;
+}
+
+.alert button.close{
+  color: #000;
+  margin-top: -1.3rem;
+  right: 20px;
+}
+
+.modal .modal-content .modal-header h4{
+  margin: 0 !important;
+}
+.navbar .navbar-nav .nav-item .nav-link [class^="fa"]{
+  line-height: 1;
+}
+
+.tooltip.in{
+  filter: alpha(opacity=90);
+  opacity: .9;
+}
