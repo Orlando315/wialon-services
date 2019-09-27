@@ -34,6 +34,12 @@ return [
     */
 
     'channels' => [
+        'tokens' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/tokens.log'),
+            'level' => 'debug',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],

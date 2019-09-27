@@ -55,6 +55,30 @@
         </div><!-- .card-footer -->
       </div><!-- .card -->
     </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title text-center">Token Wialon</h5>
+        </div>
+        <div class="card-body">
+          <p class="card-text {{ Auth::user()->token->wialon ? 'badge-primary' : 'badge-secondary' }} text-center token-wialon rounded">
+            {{ Auth::user()->token->wialon ?? 'No ha iniciado sesión o ha ocurrido un error con el token de Wialon' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title text-center">Token Wisetrack</h5>
+        </div>
+        <div class="card-body">
+          <p class="card-text{{ Auth::user()->token->wisetrack ? ' badge-primary' : ' badge-secondary' }} text-center token-wialon rounded">
+            {{ Auth::user()->token->wisetrack ?? 'El usuario no ha ingresado un token de Wisetrack' }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="passModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="passModalLabel">

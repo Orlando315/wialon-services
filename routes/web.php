@@ -26,6 +26,13 @@ Route::group(['middleware' => 'auth'], function (){
   Route::patch('perfil', 'HomeController@updatePerfil')->name('perfil.update');
   Route::patch('perfil/password', 'HomeController@password')->name('perfil.password');
 
+  /* --- Tokens --- */
+  Route::post('tokens/', 'TokensController@store')->name('tokens.store');
+  Route::post('tokens/nullify', 'TokensController@nullify')->name('tokens.nullify');
+
+  /* --- Info --- */
+  Route::get('/test', 'WialonController@getInfo');
+
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
     /* --- Users --- */
