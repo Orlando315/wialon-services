@@ -33,23 +33,43 @@ class User extends Authenticatable
       $this->notify(new ResetPassword($token));
     }
 
+    /**
+     * Verificar si el User tiene el Role solicitado
+     */
     public function checkRole($role)
     {
       return $this->role == $role;
     }
 
+    /**
+     * Verificar si el User tiene Role admin
+     */
     public function isAdmin()
     {
       return $this->role == 'admin';
     }
 
+    /**
+     * Obtener el nombre del Role del User
+     */
     public function role()
     {
       return $this->role == 'admin' ? 'Administrador' : 'Usuario';
     }
 
-    public function token()
+    /**
+     * Obtener los Servicios del User
+     */
+    public function servicios()
     {
-      return $this->hasOne('App\Token');
+      return $this->hasMany('App\Servicio');
+    }
+
+    /**
+     * Obtener los Repetidores del User
+     */
+    public function repetidores()
+    {
+      return $this->hasMany('App\Repetidor');
     }
 }

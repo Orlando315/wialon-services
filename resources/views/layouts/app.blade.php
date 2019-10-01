@@ -57,6 +57,12 @@
               </ul>
               <ul class="navbar-nav ml-auto">
 
+                <li class="nav-item">
+                  <a href="{{ route('servicios.create') }}" class="nav-link" rel="tooltip" title="Agregar servicio">
+                    <i class="fa fa-plus" aria-hidden="true"></i> Agregar servicio
+                  </a>
+                </li>
+
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ Auth::user()->email }}

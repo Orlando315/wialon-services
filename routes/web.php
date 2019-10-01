@@ -26,12 +26,21 @@ Route::group(['middleware' => 'auth'], function (){
   Route::patch('perfil', 'HomeController@updatePerfil')->name('perfil.update');
   Route::patch('perfil/password', 'HomeController@password')->name('perfil.password');
 
-  /* --- Tokens --- */
-  Route::post('tokens/', 'TokensController@store')->name('tokens.store');
-  Route::post('tokens/nullify', 'TokensController@nullify')->name('tokens.nullify');
+  /* --- Servicios --- */
+  Route::resource('servicios', 'ServiciosController');
 
-  /* --- Info --- */
-  Route::get('/test', 'WialonController@getInfo');
+  /* --- repetidores --- */
+  Route::get('repetidores/{servicio}/create/', 'RepetidoresController@create')->name('repetidores.create');
+  Route::post('repetidores/{servicio}/create/', 'RepetidoresController@store')->name('repetidores.store');
+  Route::get('repetidores/{repetidor}/logs', 'RepetidoresController@logs')->name('repetidores.logs');
+  Route::resource('repetidores', 'RepetidoresController')
+  ->except([
+    'create',
+    'store'
+  ])
+  ->parameters([
+      'repetidores' => 'repetidor'
+  ]);
 
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        

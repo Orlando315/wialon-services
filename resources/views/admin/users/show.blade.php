@@ -22,7 +22,9 @@
     <div class="col-md-3">
       <div class="card card-information">
         <div class="card-header">
-          <h4>Información</h4>
+          <h4 class="card-title">
+            Información
+          </h4>
         </div><!-- .card-header -->
         <div class="card-body">
           <strong>Role</strong>
@@ -49,6 +51,7 @@
           </p>
         </div>
         <div class="card-footer text-center">
+          <hr>
           <small class="text-muted">
             {{ $user->created_at }}
           </small>
@@ -57,26 +60,38 @@
     </div>
 
     <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title text-center">Token Wialon</h5>
-        </div>
-        <div class="card-body">
-          <p class="card-text {{ Auth::user()->token->wialon ? 'badge-primary' : 'badge-secondary' }} text-center token-wialon rounded">
-            {{ Auth::user()->token->wialon ?? 'No ha iniciado sesión o ha ocurrido un error con el token de Wialon' }}
-          </p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title text-center">Token Wisetrack</h5>
-        </div>
-        <div class="card-body">
-          <p class="card-text{{ Auth::user()->token->wisetrack ? ' badge-primary' : ' badge-secondary' }} text-center token-wialon rounded">
-            {{ Auth::user()->token->wisetrack ?? 'El usuario no ha ingresado un token de Wisetrack' }}
-          </p>
-        </div>
+      <div class="row">
+        @foreach(Auth::user()->servicios as $servicio)
+          <div class="col-md-6">
+            <div class="card table-with-links">
+              <div class="card-header">
+                <h4 class="card-title text-center">
+                  <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
+                    {{ $servicio->alias ?? $servicio->wialon }}
+                  </a>
+                </h4>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Repetidor</th>
+                      <th>Endpoint</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($servicio->repetidores as $repetidor)
+                      <tr>
+                        <td title="{{ $repetidor->token }}">{{ $repetidor->alias ?? $repetidor->token }}</td>
+                        <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        @endforeach
       </div>
     </div>
   </div>

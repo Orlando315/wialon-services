@@ -51,8 +51,6 @@ class UsersControllers extends Controller
       $user->password = bcrypt($request->rut);
 
       if($user->save()){
-        $user->token()->create([]);
-
         return redirect()->route('admin.users.show', ['user' => $user->id])->with([
           'flash_message' => 'Usuario agregado exitosamente.',
           'flash_class' => 'alert-success'

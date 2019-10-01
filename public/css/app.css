@@ -18,6 +18,10 @@
   }
 }
 
+.card-servicio .dropdown-menu.dropdown-menu-right{
+  transform: translate(-90px, 35px) !important;
+}
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;
@@ -44,8 +48,6 @@ h1, h2, h3, h4, h5{
 
 .alert button.close{
   color: #000;
-  margin-top: -1.3rem;
-  right: 20px;
 }
 
 .modal .modal-content .modal-header h4{
@@ -58,4 +60,12 @@ h1, h2, h3, h4, h5{
 .tooltip.in{
   filter: alpha(opacity=90);
   opacity: .9;
+}
+
+.btn-primary.disabled, .btn-primary:disabled{
+    border-color: #3472F7;
+    color:  #3472F7;
+}
+button:disabled:hover{
+  cursor: default;
 }

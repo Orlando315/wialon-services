@@ -5,33 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Tokens;
+use App\Servicio;
 use Wialon;
 
 class WialonController extends Controller
 { 
-    protected function getInfo($token)
+    protected function getInfo($servicio)
     {
       $wialon_api = new Wialon();
 
-      $result = json_decode($wialon_api->login($token->wialon), true);
+      $result = json_decode($wialon_api->login($servicio->wialon), true);
 
       if(!isset($result['error'])){
         $units = json_decode($wialon_api->core_update_data_flags('{"spec":[{"type":"type","data":"avl_unit","flags":1025,"mode":0}]}'));
         $wialon_api->logout();
-        // $this->sendData($units);
+
         return $units;
       }elseif($result['error'] == 1 || $result['error'] == 7 || $result['error'] == 8){
-        Log::channel('tokens')->info('Desactivar token de Wialon al usuario: '.$token->user_id, ['error' => $result['error']]);
-        $token->disableToken();
+        Log::channel('tokens')->info('Desactivar token de Wialon al usuario: '.$servicio->user_id, ['error' => $result['error']]);
+        $servicio->disableToken();
       }
     }
 
-    protected function sendData($units, $token)
+    protected function sendData($units, $servicio)
     {
-      foreach ($units as $unit) {
-        $curl = curl_init('http://ei.wisetrack.cl/API/Centinela/InsertarPosicion');
+      $repetidores = $servicio->repetidores()->whereNotNull('token')->get();
 
+      foreach ($units as $unit) {
         $name = strlen($unit->d->nm) <= 10 ? $unit->d->nm : substr($unit->d->nm, 0, 10);
 
         $info = [
@@ -47,31 +47,38 @@ class WialonController extends Controller
         ];
 
         $data = json_encode(['posicion' => $info]);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type:application/json', 'Authorization: Bearer ' . $token->wisetrack]);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        $result = json_decode(curl_exec($curl), true);
+        foreach ($repetidores as $repetidor) {
+          $curl = curl_init('http://ei.wisetrack.cl/API/Centinela/' . $repetidor->endpoint);
 
-        if(isset($result['fault']) && $result['fault']['code'] == 900901){
-          Log::channel('tokens')->info('Desactivar token de Wisetrack al usuario: ' . $token->user_id, $result['fault']);
-          $token->disableToken('wisetrack');
-          break;
+          curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+          curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type:application/json', 'Authorization: Bearer ' . $repetidor->token]);
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+          $result = json_decode(curl_exec($curl), true);
+
+          if(isset($result['fault']) && $result['fault']['code'] == 900901){
+            Log::channel('tokens')->info('Desactivar token de Wisetrack al usuario: ' . $servicio->user_id, $result['fault']);
+            $repetidor->disableToken();
+          }
+
+          curl_close($curl);
         }
-        dd($result);
-        curl_close($curl);
       }
     }
 
     public function cronjob()
     {
-      $tokens = Token::whereNotNull('wialon')
-                      ->whereNotNull('wisetrack')
+      $servicios = Servicio::whereNotNull('wialon')
+                      ->where('active', true)
                       ->get();
 
-      foreach ($tokens as $token) {
-        $units = $this->getInfo($token);
-        $this->sendData($units, $token);
+      foreach ($servicios as $servicio) {
+        $units = $this->getInfo($servicio);
+
+        if($units){
+          $this->sendData($units, $servicio);
+        }
       }
 
     }
