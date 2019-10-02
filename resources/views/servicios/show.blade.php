@@ -26,6 +26,10 @@
             <a class="btn btn-primary btn-fill btn-xs" href="{{ route('repetidores.create', ['servicio' => $servicio->id]) }}" title="Agregar repetidor">
               <i class="fa fa-plus"></i> Agregar repetidor
             </a>
+            <button class="btn btn-secondary btn-fill btn-xs btn-load-logs" type="button" data-servicio="{{ $servicio->id }}">
+              <i class="fa fa-file-text-o"></i>
+              Logs
+            </button>
           </h4>
           <p class="card-category{{ $servicio->wialon ? '' : ' text-danger' }}">{{ $servicio->wialon ?? '-NO HAY TOKEN REGISTRADO-' }}</p>
           <hr class="my-1">
@@ -57,7 +61,7 @@
                       </button>
 
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
-                        <a class="dropdown-item" href="#"><i class="fa fa-file-text-o"></i> Logs</a>
+                        <a class="dropdown-item btn-load-logs" href="#" data-repetidor="{{ $repetidor->id }}"><i class="fa fa-file-text-o"></i> Logs</a>
                         <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
                         <a class="dropdown-item text-danger" href="#" role="button" data-repetidor="{{ $repetidor->id }}" data-toggle="modal" data-target="#deleteRepetidorModal">
                           <i class="fa fa-times" aria-hidden="true"></i>
@@ -76,6 +80,123 @@
           <p class="card-category">
             {{ $servicio->created_at }}
           </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-dismissible alert-danger alert-logs" role="alert" style="display: none">
+        <strong class="text-center">Ha ocurrido un error al cargar los Logs.</strong> 
+
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card card-logs">
+        <div class="card-header">
+          <h4 class="card-title">
+            <i class="fa fa-file-text-o"></i> Logs
+            <button class="btn btn-success btn-fill btn-xs btn-reload-logs" type="button" title="Agregar repetidor">
+              <i class="fa fa-refresh"></i> Recargar
+            </button>
+          </h4>
+        </div><!-- .card-header -->
+        <div class="card-body content-full-width">
+          <ul role="tablist" class="nav nav-tabs">
+            <li role="presentation" class="nav-item" aria-expanded="true">
+              <a class="nav-link active" id="all-tab" href="#logs-all" data-toggle="tab" aria-expanded="true"><i class="fa fa-info"></i> Todos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="success-tab" href="#logs-success" data-toggle="tab"><i class="fa fa-check"></i> Completos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="error-tab" href="#logs-error" data-toggle="tab"><i class="fa fa-close"></i> Error</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="logs-all" class="tab-pane fade active show" role="tabpanel" aria-labelledby="all-tab" aria-expanded="true">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Fecha</th>
+                      <th scope="col" class="text-center">Error</th>
+                      <th scope="col" class="text-center">Código</th>
+                      <th scope="col" class="text-center">Mensaje</th>
+                      <th scope="col" class="text-center">Token</th>
+                    </tr>
+                  </thead>
+                  <tbody class="tbody-logs-all">
+                    @foreach($logs->all as $all)
+                      <tr>
+                        <td scope="row">{{ $all->created_at }}</td>
+                        <td class="text-center">{!! $all->type() !!}</td>
+                        <td class="text-center">{{ $all->code }}</td>
+                        <td>{{ $all->message }}</td>
+                        <td>{{ $all->token }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="logs-success" class="tab-pane fade" role="tabpanel" aria-labelledby="success-tab" aria-expanded="false">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Fecha</th>
+                      <th scope="col" class="text-center">Mensaje</th>
+                      <th scope="col" class="text-center">Token</th>
+                    </tr>
+                  </thead>
+                  <tbody class="tbody-logs-success">
+                    @foreach($logs->success as $success)
+                      <tr>
+                        <td scope="row">{{ $success->created_at }}</td>
+                        <td>{{ $success->message }}</td>
+                        <td>{{ $success->token }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="logs-error" class="tab-pane fade" role="tabpanel" aria-labelledby="error-tab" aria-expanded="false">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Fecha</th>
+                      <th scope="col" class="text-center">Código</th>
+                      <th scope="col" class="text-center">Mensaje</th>
+                      <th scope="col" class="text-center">Token</th>
+                    </tr>
+                  </thead>
+                  <tbody class="tbody-logs-error">
+                    @foreach($logs->error as $error)
+                      <tr>
+                        <td scope="row">{{ $error->created_at }}</td>
+                        <td class="text-center">{{ $error->code }}</td>
+                        <td>{{ $error->message }}</td>
+                        <td>{{ $error->token }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div><!-- .card-body --->
+        <div class="card-loading justify-content-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
         </div>
       </div>
     </div>
@@ -143,6 +264,7 @@
   <script type="text/javascript">
     $(document).ready(function (){
       btnDeleteRepetidor.click(deleteRepetidor)
+
       $('#deleteRepetidorModal').on('show.bs.modal', function (event){
         let repetidor = $(event.relatedTarget).data('repetidor')
 
@@ -152,8 +274,25 @@
       $('#deleteRepetidorModal').on('hide.bs.modal', function (){
         btnDeleteRepetidor.data('repetidor', null)
       })
+
+      $('.btn-load-logs').click(function (event) {
+        event.preventDefault();
+
+        selectedLogs = $(this).data('repetidor') || $(this).data('servicio')
+        logsType     = $(this).data('repetidor') ? 'repetidor' : 'servicio';
+
+        loadLogs()
+      })
+
+      $('.btn-reload-logs').click(loadLogs)
     })
-    const btnDeleteRepetidor = $('#delete-repetidor');
+
+    const cardLoading = $('.card-loading'),
+          btnDeleteRepetidor = $('#delete-repetidor'),
+          alertLogs = $('.alert-logs');
+
+    let selectedLogs = @json($logs->id),
+        logsType     = '{{ $logs->type }}';
 
     function deleteRepetidor(){
       let repetidor = btnDeleteRepetidor.data('repetidor'),
@@ -183,6 +322,60 @@
       }else{
         $('.alert-repetidores').show().delay(5000).hide('slow')
       }
+    }
+
+    function loadLogs(event){
+      let url = `{{ route("logs.index") }}/${selectedLogs}/${logsType}`;
+      $('tbody[class^="tbody-logs"]').empty()
+
+      toggleLogsLoading()
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          _method: 'POST',
+          _token: '{{ @csrf_token() }}',
+        },
+        dataType: 'json'
+      })
+      .done(function (response) {
+        $.each(response, function (table, data){
+          let tbody = '';
+
+          $.each(data, function (i, log){
+
+            tbody += '<tr>'
+            tbody += `<td>${log.date}</td>`
+
+            if(table == 'all'){
+              tbody += `<td class="text-center">${log.error}</td>`
+            }
+
+            if(table == 'all' || table == 'error'){
+              tbody += `<td class="text-center">${log.code}</td>`
+            }
+            
+            tbody += `<td>${log.message}</td>`
+            tbody += `<td>${log.token}</td>`
+            tbody += '</tr>'
+          })
+
+          $(`.tbody-logs-${table}`).append(tbody)
+        })
+      })
+      .fail(function () {
+        alertLogs.show().delay(5000).hide('slow')
+      })
+      .always(function () {
+        toggleLogsLoading(false)
+      })
+    }
+
+    function toggleLogsLoading(show = true){
+      $('.btn-reload-logs, .btn-load-logs').prop('disable', show)
+      cardLoading.toggleClass('d-flex', show)
+      show ? cardLoading.fadeIn() : cardLoading.fadeOut()
     }
   </script>
 @endsection

@@ -53,6 +53,89 @@ class Repetidor extends Model
     }
 
     /**
+     * Obtener los Logs del Repetidor
+     */
+    public function logs()
+    {
+      return $this->hasMany('App\Log');
+    }
+
+    /**
+     * Obtener los Logs solo del Servicio. Sin los repetidores
+     */
+    public function logsAll()
+    {
+      return $this->logs()
+                  ->latest();;
+    }
+
+    /**
+     * Obtener los Logs exitosos del Servicio
+     */
+    public function logsSuccess()
+    {
+      return $this->logs()
+                  ->where('error', false)
+                  ->latest();
+    }
+
+    /**
+     * Obtener los Logs de errores del Servicio
+     */
+    public function logsError()
+    {
+      return $this->logs()
+                  ->where('error', true)
+                  ->latest();
+    }
+
+    /**
+     * Formatear logs para las tablas en la vista de Servicio
+     * @param  String  $type
+     */
+    public function formatLogs($type)
+    {
+      $logs = [];
+      foreach ($this->{$type} as $log) {
+        $group = [];
+        $group['date'] = $log->created_at->format('Y-m-d H:i:s');
+        $group['message'] = $log->message ?? '';
+        $group['token'] = $log->token ?? '';
+
+        if($type == 'logsAll'){
+          $group['error'] = $log->type();
+        }
+
+        if($type == 'logsError' || $type == 'logsAll'){
+          $group['code'] = $log->code ?? '';
+        }
+
+        $logs[] = $group;
+      }
+
+      return $logs;
+    }
+
+    /**
+     * Obtener el estado del ultimo Log del Repetidor
+     */
+    public function lastStatus()
+    {
+      $last = $this->logs->last();
+
+      return $last ? $last->error ? '<span class="badge badge-danger">Error</span>' : '<span class="badge badge-success">Ok</span>' : '-';
+    }
+
+    /**
+     * Obtener el mensaje del ultimo Log del Repetidor
+     */
+    public function lastMessage()
+    {
+      $last = $this->logs->last();
+      return $last ? $last->message : '';
+    }
+
+    /**
      * Eliminar el token del Repetidor
      */
     public function disableToken()

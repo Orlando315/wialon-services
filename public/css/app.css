@@ -22,6 +22,20 @@
   transform: translate(-90px, 35px) !important;
 }
 
+.card .card-loading{
+  position: absolute;
+  background-color: rgba(255, 255, 255, .7);
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+}
+
+.card-logs .table-sm td, .table-sm th {
+  padding: .3rem !important;
+  font-size: 14px;
+}
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;

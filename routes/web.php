@@ -27,7 +27,11 @@ Route::group(['middleware' => 'auth'], function (){
   Route::patch('perfil/password', 'HomeController@password')->name('perfil.password');
 
   /* --- Servicios --- */
-  Route::resource('servicios', 'ServiciosController');
+  Route::resource('servicios', 'ServiciosController')
+  ->except([
+    'show'
+  ]);
+  Route::get('servicios/{servicio}/{repetidor?}', 'ServiciosController@show')->name('servicios.show');
 
   /* --- repetidores --- */
   Route::get('repetidores/{servicio}/create/', 'RepetidoresController@create')->name('repetidores.create');
@@ -41,6 +45,10 @@ Route::group(['middleware' => 'auth'], function (){
   ->parameters([
       'repetidores' => 'repetidor'
   ]);
+
+  /* --- Logs --- */
+  Route::get('logs', 'LogsController@index')->name('logs.index');
+  Route::post('logs/{servicio}/{type}', 'LogsController@logsByType');
 
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        

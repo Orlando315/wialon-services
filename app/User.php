@@ -72,4 +72,13 @@ class User extends Authenticatable
     {
       return $this->hasMany('App\Repetidor');
     }
+
+    /**
+     * Obtener los Logs del User
+     */
+    public function logs()
+    {
+      return $this->hasMany('App\Log');
+    }
+
 }

@@ -61,7 +61,7 @@
 
     <div class="col-md-8">
       <div class="row">
-        @foreach(Auth::user()->servicios as $servicio)
+        @foreach($user->servicios as $servicio)
           <div class="col-md-6">
             <div class="card table-with-links">
               <div class="card-header">
@@ -76,14 +76,14 @@
                   <thead>
                     <tr>
                       <th>Repetidor</th>
-                      <th>Endpoint</th>
+                      <th>Último status</th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach($servicio->repetidores as $repetidor)
                       <tr>
                         <td title="{{ $repetidor->token }}">{{ $repetidor->alias ?? $repetidor->token }}</td>
-                        <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
+                        <td class="text-center" title="{{ $repetidor->lastMessage() }}">{!! $repetidor->lastStatus() !!}</td>
                       </tr>
                     @endforeach
                   </tbody>

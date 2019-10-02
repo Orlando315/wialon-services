@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as LaravelLog;
 use App\Servicio;
 use Wialon;
+use App\Log;
 
 class WialonController extends Controller
 { 
@@ -21,9 +22,23 @@ class WialonController extends Controller
         $wialon_api->logout();
 
         return $units;
-      }elseif($result['error'] == 1 || $result['error'] == 7 || $result['error'] == 8){
-        Log::channel('tokens')->info('Desactivar token de Wialon al usuario: '.$servicio->user_id, ['error' => $result['error']]);
-        $servicio->disableToken();
+      }else{
+
+        // Guardamos el error
+        Log::create([
+          'user_id' => $servicio->user_id,
+          'servicio_id' => $servicio->id,
+          'code' => $result['error'],
+          'token' => $servicio->wialon,
+          'message' => $result['reason'],
+          'result' => $result
+        ]);
+
+        // Si es un error de login, eliminar el token
+        if(in_array($result['error'], [1, 4, 7, 8])){
+          LaravelLog::channel('tokens')->info('Desactivar token de Wialon al usuario: '.$servicio->user_id, ['error' => $result['error']]);
+          $servicio->disableToken();
+        }
       }
     }
 
@@ -57,11 +72,33 @@ class WialonController extends Controller
 
           $result = json_decode(curl_exec($curl), true);
 
+          // Creamos el log
+          $log = new Log([
+            'user_id' => $servicio->user_id,
+            'servicio_id' => $servicio->id,
+            'token' => $repetidor->token,
+            'result' => $result
+          ]);
+
           if(isset($result['fault']) && $result['fault']['code'] == 900901){
-            Log::channel('tokens')->info('Desactivar token de Wisetrack al usuario: ' . $servicio->user_id, $result['fault']);
+            $log->code = $result['fault']['code'];
+            $log->message = 'Desactivar tokens';
+
+            LaravelLog::channel('tokens')->info('Desactivar token de Wisetrack al usuario: ' . $servicio->user_id, $result['fault']);
             $repetidor->disableToken();
+          }else{
+            if(isset($result['Exception'])){
+              $log->code = 0;
+              $log->message = $result['Exception'];
+            }else{
+              $log->error = in_array($result['RespuestaServicioWeb']['RespuestaOperacion']['ResultadoTransaccion']['Estado'], [2, 3, 4, 5, 6]);
+              $log->code = $result['RespuestaServicioWeb']['RespuestaOperacion']['ResultadoTransaccion']['Estado'];
+              $log->message = $result['RespuestaServicioWeb']['RespuestaOperacion']['ResultadoTransaccion']['DetalleEjecucion'];
+            }
           }
 
+          // Guardar el log
+          $log->save();
           curl_close($curl);
         }
       }

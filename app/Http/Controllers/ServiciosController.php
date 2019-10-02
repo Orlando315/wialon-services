@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Servicio;
+use App\Repetidor;
 
 class ServiciosController extends Controller
 {
@@ -64,11 +65,20 @@ class ServiciosController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Servicio  $servicio
+     * @param  \App\Repetidor  $repetidor
      * @return \Illuminate\Http\Response
      */
-    public function show(Servicio $servicio)
+    public function show(Servicio $servicio, Repetidor $repetidor = null)
     {
-      return view('servicios.show', compact('servicio'));
+      $logs = (object)[
+        'id' => $repetidor ? $repetidor->id : $servicio->id,
+        'all' => $repetidor ? $repetidor->logsAll : $servicio->logsAll,
+        'success' => $repetidor ? $repetidor->logsSuccess : $servicio->logsSuccess,
+        'error' => $repetidor ? $repetidor->logsError : $servicio->logsError,
+        'type' => $repetidor ? 'repetidor' : 'servicio',
+      ];
+
+      return view('servicios.show', compact('servicio', 'logs'));
     }
 
     /**

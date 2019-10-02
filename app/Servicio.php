@@ -54,6 +54,77 @@ class Servicio extends Model
     }
 
     /**
+     * Obtener los Logs del Servicio
+     */
+    public function logs()
+    {
+      return $this->hasMany('App\Log');
+    }
+
+    /**
+     * Obtener los Logs solo del Servicio. Sin los repetidores
+     */
+    public function logsAll()
+    {
+      return $this->logs()
+                  ->where('repetidor_id', null)
+                  ->latest();;
+    }
+
+    /**
+     * Obtener los Logs exitosos del Servicio
+     */
+    public function logsSuccess()
+    {
+      return $this->logs()
+                  ->where([
+                    ['repetidor_id', null],
+                    ['error', false]
+                  ])
+                  ->latest();
+    }
+
+    /**
+     * Obtener los Logs de errores del Servicio
+     */
+    public function logsError()
+    {
+      return $this->logs()
+                  ->where([
+                    ['repetidor_id', null],
+                    ['error', true]
+                  ])
+                  ->latest();
+    }
+
+    /**
+     * Formatear logs para las tablas en la vista de Servicio
+     * @param  String  $type
+     */
+    public function formatLogs($type)
+    {
+      $logs = [];
+      foreach ($this->{$type}()->get() as $log) {
+        $group = [];
+        $group['date'] = $log->created_at->format('Y-m-d H:i:s');
+        $group['message'] = $log->message ?? '';
+        $group['token'] = $log->token ?? '';
+
+        if($type == 'logsAll'){
+          $group['error'] = $log->type();
+        }
+
+        if($type == 'logsError' || $type == 'logsAll'){
+          $group['code'] = $log->code ?? '';
+        }
+
+        $logs[] = $group;
+      }
+
+      return $logs;
+    }
+
+    /**
      * Eliminar token de Wialon del Servicio
      */
     public function disableToken()
