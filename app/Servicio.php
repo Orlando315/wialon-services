@@ -4,10 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\WialonTokenExpiration;
+use App\Notifications\WialonTokenDeleted;
 use App\Scopes\UserScope;
 
 class Servicio extends Model
 {
+    use Notifiable;
+
     /**
      * The "booting" method of the model.
      *
@@ -31,11 +36,23 @@ class Servicio extends Model
     protected $fillable = [
       'alias',
       'wialon',
+      'wialon_expiration',
     ];
 
     protected $cast = [
       'active' => 'boolean'
     ];
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForMail($notification)
+    {
+      return $this->user->email;
+    }
 
     /**
      * Obtener el User al que pertenece el Servicio
@@ -131,5 +148,44 @@ class Servicio extends Model
     {
       $this->wialon = null;
       $this->save();
+
+      $this->sendWialonTokenDeletedEmail();
+    }
+
+    /**
+     * Notificar al User que el Token de Wialon esta por expirar
+     */
+    public function sendWialonTokenExpirationEmail()
+    {
+      $nombre = $this->user->nombres.' '.$this->user->apellidos;
+
+      $this->notify(new WialonTokenExpiration($nombre, $this));
+    }
+
+    /**
+     * Notificar al User que el Token de Wialon fue eliminado
+     */
+    public function sendWialonTokenDeletedEmail()
+    {
+      $nombre = $this->user->nombres.' '.$this->user->apellidos;
+
+      $this->notify(new WialonTokenDeleted($nombre, $this));
+    }
+
+    /**
+     * Actualizar la fecha de expiracion del Token
+     */
+    public function updateExpiration()
+    {
+      $this->wialon_expiration = $this->updated_at->addDays('30');
+      $this->save();
+    }
+
+    /**
+     * Verificar si el Token de Wialon esta por expirar (Dentro de 5 dias o menos)
+     */
+    public function isAboutToExpire()
+    {
+      return $this->wialon_expiration <= date('Y-m-d H:i:s', strtotime('+5 days'));
     }
 }

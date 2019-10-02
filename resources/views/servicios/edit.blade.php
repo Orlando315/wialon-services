@@ -57,7 +57,7 @@
               @endif
 
               <div class="form-group text-right">
-                <a class="btn btn-default" href="{{ route('dashboard') }}"><i class="fa fa-reply"></i> Atras</a>
+                <a class="btn btn-default" href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}"><i class="fa fa-reply"></i> Atras</a>
                 <button id="send-form" class="btn btn-primary" type="submit" {{ $servicio->wialon || old('token') ? '' : 'disabled' }}><i class="fa fa-send"></i> Guardar</button>
               </div>
             </form>

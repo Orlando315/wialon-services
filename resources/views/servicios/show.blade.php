@@ -31,7 +31,8 @@
               Logs
             </button>
           </h4>
-          <p class="card-category{{ $servicio->wialon ? '' : ' text-danger' }}">{{ $servicio->wialon ?? '-NO HAY TOKEN REGISTRADO-' }}</p>
+          <p class="card-category{{ $servicio->wialon ? '' : ' text-danger' }}">Token: {{ $servicio->wialon ?? '-NO HAY TOKEN REGISTRADO-' }}</p>
+          <p class="card-category{{ $servicio->isAboutToExpire() ? ' text-danger' : '' }}">Fecha de expiración aproximada: {{ $servicio->wialon_expiration ?? '-' }}</p>
           <hr class="my-1">
         </div>
         <div class="card-body">

@@ -45,6 +45,7 @@ class ServiciosController extends Controller
       $servicio = new Servicio([
         'alias'  => $request->alias,
         'wialon' => $request->token,
+        'wialon_expiration' => date('Y-m-d H:i:s', strtotime('+30 days'))
       ]);
 
       if(Auth::user()->servicios()->save($servicio)){
@@ -110,6 +111,10 @@ class ServiciosController extends Controller
       $servicio->wialon = $request->token;
 
       if($servicio->save()){
+        if(isset($servicio->getChanges()['wialon'])){
+          $servicio->updateExpiration();
+        }
+
         return redirect()->route('servicios.show', ['servicio' => $servicio->id])->with([
           'flash_message' => 'Servicio modificado exitosamente.',
           'flash_class' => 'alert-success'

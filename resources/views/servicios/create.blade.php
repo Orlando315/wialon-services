@@ -141,7 +141,6 @@
     }
 
     function toggleToken(isAdded = false, token = null){
-      console.log(isAdded, token)
       $('#token').val(token)
       sendBtn.prop('disabled', !isAdded);
       toggleButton('login-wialon', isAdded)

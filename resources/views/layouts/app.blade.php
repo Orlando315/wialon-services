@@ -37,6 +37,13 @@
               </a>
             </li>
             @endif
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('dashboard') }}">
+                <i class="fa fa-podcast"></i>
+                <p>Servicios</p>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
