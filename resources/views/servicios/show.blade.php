@@ -19,7 +19,7 @@
 
   <div class="row mt-2">
     <div class="col-md-12">
-      <div class="card card-servicio">
+      <div class="card card-servicio card-dropdown-tabs">
         <div class="card-header">
           <h4 class="card-title">
             {{ $servicio->alias ?? 'Servicio' }}
@@ -36,51 +36,107 @@
           <hr class="my-1">
         </div>
         <div class="card-body">
-          <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
-            <thead>
-              <tr>
-                <th scope="col" class="text-center">#</th>
-                <th scope="col" class="text-center">Servicio</th>
-                <th scope="col" class="text-center">Alias</th>
-                <th scope="col" class="text-center">token</th>
-                <th scope="col" class="text-center">endpoint</th>
-                <th scope="col" class="text-center">Acción</th>
-              </tr>
-            </thead>
-            <tbody class="text-center">
-              @foreach($servicio->repetidores as $repetidor)
-                <tr class="repetidor-{{ $repetidor->id }}">
-                  <td scope="row">{{ $loop->index + 1 }}</td>
-                  <td>{{ $repetidor->servicio }}</td>
-                  <td>{{ $repetidor->alias }}</td>
-                  <td title="{{ $repetidor->token }}">{{ $repetidor->token }}</td>
-                  <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
-                  <td>
-                    <div class="dropdown btn-config-dropdown">
-                      <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownConfigLink-{{ $repetidor->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-cogs"></i>
-                      </button>
+          <ul id="repetidores-tokens" class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="repetidores-tab" href="#repetidores" role="tab" data-toggle="tab" aria-controls="repetidores" aria-selected="true"><i class="fa fa-podcast"></i> Repetidores</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="api-tab" href="#api" role="tab" data-toggle="tab" aria-controls="api" aria-selected="false"><i class="fa fa-cubes"></i> API Tokens</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="repetidores" class="tab-pane fade show active" role="tabpanel" aria-labelledby="repetidores-tab">
+              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Servicio</th>
+                    <th scope="col" class="text-center">Alias</th>
+                    <th scope="col" class="text-center">token</th>
+                    <th scope="col" class="text-center">endpoint</th>
+                    <th scope="col" class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="">
+                  @foreach($servicio->repetidores as $repetidor)
+                    <tr class="repetidor-{{ $repetidor->id }}">
+                      <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $repetidor->servicio }}</td>
+                      <td>{{ $repetidor->alias }}</td>
+                      <td title="{{ $repetidor->token }}">{{ $repetidor->token }}</td>
+                      <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
+                      <td>
+                        <div class="dropdown btn-config-dropdown">
+                          <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownConfigLink-{{ $repetidor->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-cogs"></i>
+                          </button>
 
-                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
-                        <a class="dropdown-item btn-load-logs" href="#" data-repetidor="{{ $repetidor->id }}"><i class="fa fa-file-text-o"></i> Logs</a>
-                        <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
-                        <a class="dropdown-item text-danger" href="#" role="button" data-repetidor="{{ $repetidor->id }}" data-toggle="modal" data-target="#deleteRepetidorModal">
-                          <i class="fa fa-times" aria-hidden="true"></i>
-                          Eliminar
-                        </a>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer">
-          <hr>
-          <p class="card-category">
-            {{ $servicio->created_at }}
-          </p>
+                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
+                            <a class="dropdown-item btn-load-logs" href="#" data-repetidor="{{ $repetidor->id }}"><i class="fa fa-file-text-o"></i> Logs</a>
+                            <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
+                            <a class="dropdown-item text-danger" href="#" role="button" data-repetidor="{{ $repetidor->id }}" data-toggle="modal" data-target="#deleteRepetidorModal">
+                              <i class="fa fa-times" aria-hidden="true"></i>
+                              Eliminar
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+            <div id="api" class="tab-pane fade" role="tabpanel" aria-labelledby="api-tab">
+              <button class="btn btn-primary btn-fill btn-xs btn-generate-token my-2" title="Generar token">
+                <i class="fa fa-plus"></i> Generar token
+              </button>
+
+              <p class="card-category">Url: <span class="span-copy badge badge-primary" data-toggle="tooltip" title="Haz click para copiar!">{{ route('api.servicios.getData') }}</span></p>
+              <p class="card-category">El token debe ser enviado en el header de la petición con el key 'Authorization'</p>
+
+              <div class="alert alert-dismissible alert-tab-tokens alert-danger" role="alert" style="display: none">
+                <strong class="text-center">Ha ocurrido un error</strong> 
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">Creado</th>
+                    <th scope="col" class="text-center">Token</th>
+                    <th scope="col" class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="tbody-tokens">
+                  @foreach(Auth::user()->tokens as $token)
+                    <tr class="token-{{ $token->id }}">
+                      <td scope="row">{{ $token->created_at }}</td>
+                      <td class="{{ $token->api_token }}">
+                        <span class="span-copy badge badge-secondary" data-toggle="tooltip" title="Haz click para copiar!">{{ $token->token }}</span>
+                      </td>
+                      <td>
+                        <div class="dropdown btn-config-dropdown">
+                          <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownApiLink-{{ $token->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-cogs"></i>
+                          </button>
+
+                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownApiLink-{{ $token->id }}">
+                            <a class="dropdown-item text-danger" href="#" role="button" data-token="{{ $token->id }}" data-toggle="modal" data-target="#deleteTokenModal">
+                              <i class="fa fa-times" aria-hidden="true"></i>
+                              Eliminar
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -259,12 +315,43 @@
       </div>
     </div>
   </div>
+
+  <div id="deleteTokenModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteTokenModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="deleteTokenodalLabel">Eliminar Token</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center">¿Esta seguro de eliminar este Token?</p>
+
+            <div class="alert alert-dismissible alert-tokens alert-danger" role="alert" style="display: none">
+              <strong class="text-center">Ha ocurrido un error</strong> 
+
+              <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <center>
+              <button id="delete-token" data-token="" class="btn btn-fill btn-danger" type="button">Eliminar</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </center>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')
   <script type="text/javascript">
     $(document).ready(function (){
       btnDeleteRepetidor.click(deleteRepetidor)
+      btnDeleteToken.click(deleteToken)
+      btnGenerateToken.click(generateToken)
 
       $('#deleteRepetidorModal').on('show.bs.modal', function (event){
         let repetidor = $(event.relatedTarget).data('repetidor')
@@ -274,6 +361,16 @@
 
       $('#deleteRepetidorModal').on('hide.bs.modal', function (){
         btnDeleteRepetidor.data('repetidor', null)
+      })
+
+      $('#deleteTokenModal').on('show.bs.modal', function (event){
+        let token = $(event.relatedTarget).data('token')
+
+        btnDeleteToken.data('token', token)
+      })
+
+      $('#deleteTokenModal').on('hide.bs.modal', function (){
+        btnDeleteToken.data('token', null)
       })
 
       $('.btn-load-logs').click(function (event) {
@@ -286,10 +383,19 @@
       })
 
       $('.btn-reload-logs').click(loadLogs)
+
+      $('#api').on('click', '.span-copy', copyToClipboard)
+      $('.span-copy').tooltip()
+      $('.span-copy').on('hide.bs.tooltip', function() {
+        $('.span-copy')
+          .attr('data-original-title', 'Haz click para copiar!')
+      })
     })
 
     const cardLoading = $('.card-loading'),
           btnDeleteRepetidor = $('#delete-repetidor'),
+          btnDeleteToken = $('#delete-token'),
+          btnGenerateToken = $('.btn-generate-token'),
           alertLogs = $('.alert-logs');
 
     let selectedLogs = @json($logs->id),
@@ -298,6 +404,8 @@
     function deleteRepetidor(){
       let repetidor = btnDeleteRepetidor.data('repetidor'),
           url = `{{ route('repetidores.index') }}/${repetidor}`;
+
+      btnDeleteRepetidor.prop('disabled', true)
 
       if(repetidor > 0){
         $.ajax({
@@ -320,8 +428,48 @@
         .fail(function () {
           $('.alert-repetidores').show().delay(5000).hide('slow')
         })
+        .always(function () {
+          btnDeleteRepetidor.prop('disabled', false)
+        })
       }else{
         $('.alert-repetidores').show().delay(5000).hide('slow')
+        btnDeleteRepetidor.prop('disabled', false)
+      }
+    }
+
+    function deleteToken(){
+      let token = btnDeleteToken.data('token'),
+          url = `{{ route('tokens.index') }}/${token}`;
+
+      btnDeleteToken.prop('disabled', true)
+
+      if(token > 0){
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: {
+            _method: 'DELETE',
+            _token: '{{ @csrf_token() }}',
+          },
+          dataType: 'json',
+        })
+        .done(function (response) {
+          if(response === true){
+            $(`.token-${token}`).remove()
+            $('#deleteTokenModal').modal('hide')
+          }else{
+            $('.alert-tokens').show().delay(5000).hide('slow')  
+          }
+        })
+        .fail(function () {
+          $('.alert-tokens').show().delay(5000).hide('slow')
+        })
+        .always(function () {
+          btnDeleteToken.prop('disabled', false)
+        })
+      }else{
+        $('.alert-tokens').show().delay(5000).hide('slow')
+        btnDeleteToken.prop('disabled', false)
       }
     }
 
@@ -377,6 +525,73 @@
       $('.btn-reload-logs, .btn-load-logs').prop('disable', show)
       cardLoading.toggleClass('d-flex', show)
       show ? cardLoading.fadeIn() : cardLoading.fadeOut()
+    }
+
+    function generateToken(){
+      let url = `{{ route("tokens.store") }}`;
+      let alertTableToken = $('alert-tab-tokens');
+
+      btnGenerateToken.prop('disabled', true)
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          _method: 'POST',
+          _token: '{{ @csrf_token() }}',
+          servicio: @json($servicio->id),
+        },
+        dataType: 'json'
+      })
+      .done(function (response) {
+        if(response){
+          let tbody = $('.tbody-tokens')
+          let trToken = tokenTemplate(response)
+          tbody.append(trToken)
+
+          $('.span-copy').tooltip()
+        }else{
+          alertTableToken.show().delay(5000).hide('slow')
+        }
+      })
+      .fail(function () {
+        alertTableToken.show().delay(5000).hide('slow')
+      })
+      .always(function () {
+        btnGenerateToken.prop('disabled', false)
+      })
+    }
+
+    let tokenTemplate = function (token){
+      return `<tr class="token-${token.id}">
+                <td scope="row">${token.created}</td>
+                <td title="${token.token}"><span class="span-copy badge badge-secondary" data-toggle="tooltip" title="Haz click para copiar!">${token.token}</span></td>
+                <td>
+                  <div class="dropdown btn-config-dropdown">
+                    <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownApiLink-${token.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-cogs"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownApiLink-${token.id}">
+                      <a class="dropdown-item text-danger" href="#" role="button" data-token="${token.id}" data-toggle="modal" data-target="#deleteTokenModal">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                        Eliminar
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>`;
+    }
+
+    function copyToClipboard() {
+      let $temp = $('<input>');
+      $('body').append($temp);
+      $temp.val($(this).text()).select();
+      document.execCommand('copy')
+      $temp.remove();
+      $(this)
+        .attr('data-original-title', 'Copiado!')
+        .tooltip('show')
     }
   </script>
 @endsection

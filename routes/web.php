@@ -50,6 +50,14 @@ Route::group(['middleware' => 'auth'], function (){
   Route::get('logs', 'LogsController@index')->name('logs.index');
   Route::post('logs/{servicio}/{type}', 'LogsController@logsByType');
 
+  /* --- Tokens --- */
+  Route::resource('tokens', 'TokensController')
+  ->only([
+    'index',
+    'store',
+    'destroy',
+  ]);
+
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
     /* --- Users --- */

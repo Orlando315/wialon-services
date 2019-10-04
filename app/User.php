@@ -81,4 +81,12 @@ class User extends Authenticatable
       return $this->hasMany('App\Log');
     }
 
+    /**
+     * Obtener los Tokens del User
+     */
+    public function tokens()
+    {
+      return $this->hasMany('App\Token');
+    }
+
 }

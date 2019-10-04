@@ -36,6 +36,21 @@
   font-size: 14px;
 }
 
+.card-dropdown-tabs .show .dropdown-menu{
+  opacity: 0;
+  filter: alpha(opacity=0);
+  visibility: hidden;
+}
+
+.card-dropdown-tabs .show.dropdown-menu{
+  opacity: 1;
+  visibility: visible;
+}
+
+.span-copy:hover{
+  cursor: pointer;
+}
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use App\Servicio;
 use Wialon;
 use App\Log;
+use App\Token;
 
 class WialonController extends Controller
 { 
@@ -118,5 +119,11 @@ class WialonController extends Controller
         }
       }
 
+    }
+
+    public function getData(Request $request)
+    {
+      $servicio = Token::where('token', $request->header('Authorization'))->first()->servicio;
+      return response()->json($this->getInfo($servicio));
     }
 }
