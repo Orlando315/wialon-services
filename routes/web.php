@@ -16,6 +16,9 @@ Route::view('login', 'auth.login');
 
 Auth::routes();
 
+/* --- Confirmacion de Pago Flow --- */
+Route::post('pagos/flow/confirmation', 'PagosControllers@confirmation')->name('pagos.confirmation');
+
 /* --- Solo usuarios autenticados --- */
 Route::group(['middleware' => 'auth'], function (){
   /* --- Dashboard --- */
@@ -58,10 +61,23 @@ Route::group(['middleware' => 'auth'], function (){
     'destroy',
   ]);
 
+  /* --- Facturas --- */
+  Route::get('facturas/', 'FacturasControllers@index')->name('facturas.index');
+  Route::get('facturas/{factura}', 'FacturasControllers@show')->name('facturas.show');
+
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
     /* --- Users --- */
     Route::resource('users', 'UsersControllers');
+    Route::post('users/{user}/get/servicios', 'UsersControllers@servicios');
     Route::patch('users/{user}/password', 'UsersControllers@password')->name('users.password');
+
+    /* --- Facturas --- */
+    Route::resource('facturas', 'FacturasControllers')
+    ->only([
+      'index',
+      'create',
+      'store'
+    ]);
   });
 });

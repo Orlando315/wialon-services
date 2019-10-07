@@ -188,4 +188,12 @@ class Servicio extends Model
     {
       return $this->wialon_expiration <= date('Y-m-d H:i:s', strtotime('+5 days'));
     }
+
+    /**
+     * Obtener el estado del Servicio
+     */
+    public function status()
+    {
+      return $this->active ?  '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
+    }
 }

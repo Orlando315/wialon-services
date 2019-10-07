@@ -168,4 +168,16 @@ class UsersControllers extends Controller
         ]);
       }
     }
+
+    /**
+     * Obtener servicios del usuario
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+    */
+    public function servicios(Request $request, User $user)
+    {
+      return response()->json($user->servicios);
+    }
 }

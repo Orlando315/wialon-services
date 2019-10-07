@@ -51,6 +51,18 @@
   cursor: pointer;
 }
 
+/* Select 2 */
+.select2-container .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 40px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+  padding: 8px 12px;
+}
+
+
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;

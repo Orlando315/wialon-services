@@ -40,6 +40,12 @@ return [
             'level' => 'debug',
         ],
 
+        'flow' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/flow.log'),
+            'level' => 'debug',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],

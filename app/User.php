@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword;
+use Flow;
 
 class User extends Authenticatable
 {
@@ -87,6 +88,58 @@ class User extends Authenticatable
     public function tokens()
     {
       return $this->hasMany('App\Token');
+    }
+
+    /**
+     * Obtener las Facturas del User
+     */
+    public function facturas()
+    {
+      return $this->hasMany('App\Factura');
+    }
+
+    /**
+     * Registrar al User en Flow como un Customer
+     */
+    public function createFlowCustomer()
+    {
+      $flow = new Flow;
+
+      $params = [
+        'name' => $this->nombres.' '.$this->apellidos,
+        'email' => $this->email,
+        'externalId' => $this->id,
+      ];
+
+      $response = $flow->send('customer/create', $params, 'POST');
+
+      if($response){
+        $this->customerId = $response->customerId;
+        return $this->save();
+      }
+
+      return false;
+    }
+
+    /**
+     * Obtener las Facturas pendientes de Pago
+     */
+    public function facturasPendientes(){
+      return $this->facturas()->where('status', null);
+    }
+
+    /**
+     * Obtener las Facturas pagadas
+     */
+    public function facturasPagadas(){
+      return $this->facturas()->where('status', true);
+    }
+
+    /**
+     * Obtener las Facturas rechazadas
+     */
+    public function facturasRechazadas(){
+      return $this->facturas()->where('status', false);
     }
 
 }

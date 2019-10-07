@@ -36,12 +36,25 @@
                 <p>Usuarios</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.facturas.index') }}">
+                <i class="fa fa-list-alt"></i>
+                <p>Facturas</p>
+              </a>
+            </li>
             @endif
 
             <li class="nav-item">
               <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="fa fa-podcast"></i>
                 <p>Servicios</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('facturas.index') }}">
+                <i class="fa fa-list-alt"></i>
+                <p>Facturas</p>
               </a>
             </li>
           </ul>

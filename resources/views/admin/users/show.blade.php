@@ -59,39 +59,170 @@
       </div><!-- .card -->
     </div>
 
-    <div class="col-md-8">
-      <div class="row">
-        @foreach($user->servicios as $servicio)
-          <div class="col-md-6">
-            <div class="card table-with-links">
-              <div class="card-header">
-                <h4 class="card-title text-center">
-                  <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
-                    {{ $servicio->alias ?? $servicio->wialon }}
-                  </a>
-                </h4>
-              </div>
-              <div class="card-body">
-                <table class="table">
-                  <thead>
+    <div class="col-md-9">
+      <div class="card table-with-links">
+        <div class="card-header">
+          <h4 class="card-title">
+            <i class="fa fa-podcast"></i> Servicios
+          </h4>
+        </div>
+        <div class="card-body">
+          <table class="table data-table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Servicio</th>
+                <th>Repetidores</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($user->servicios as $servicio)
+                <tr>
+                  <td scope="row">{{ $loop->index + 1 }}</td>
+                  <td>
+                    <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
+                      {{ $servicio->alias ?? $servicio->wialon }}
+                    </a>
+                  </td>
+                  <td class="text-center">{{ $servicio->repetidores->count() }}</td>
+                  <td class="text-center">{!! $servicio->status() !!}</td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-dropdown-tabs">
+        <div class="card-header">
+          <h4 class="card-title">
+            <i class="fa fa-list-ul"></i> Facturas
+          </h4>
+        </div>
+        <div class="card-body">
+          <ul id="repetidores-tokens" class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pendientes-tab" href="#pendientes" role="tab" data-toggle="tab" aria-controls="pendientes" aria-selected="true">Pendientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pagadas-tab" href="#pagadas" role="tab" data-toggle="tab" aria-controls="pagadas" aria-selected="false">Pagadas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="rechazadas-tab" href="#rechazadas" role="tab" data-toggle="tab" aria-controls="rechazadas" aria-selected="false">Rechazadas</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="pendientes" class="tab-pane fade show active" role="tabpanel" aria-labelledby="pendientes-tab">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Servicio</th>
+                    <th scope="col" class="text-center">Monto</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  @foreach($user->facturasPendientes as $factura)
                     <tr>
-                      <th>Repetidor</th>
-                      <th>Último status</th>
+                      <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>
+                        @if($factura->hasServicio())
+                          <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
+                            {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
+                          </a>
+                        @endif
+                      </td>
+                      <td>{{ $factura->monto() }}</td>
+                      <td>{!! $factura->status() !!}</td>
+                      <td>
+                        <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
+                          <i class="fa fa-search"></i>
+                        </a>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($servicio->repetidores as $repetidor)
-                      <tr>
-                        <td title="{{ $repetidor->token }}">{{ $repetidor->alias ?? $repetidor->token }}</td>
-                        <td class="text-center" title="{{ $repetidor->lastMessage() }}">{!! $repetidor->lastStatus() !!}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        @endforeach
+                  @endforeach
+                </tbody>
+              </table>
+            </div><!-- .tab-pane -->
+
+            <div id="pagadas" class="tab-pane fade" role="tabpanel" aria-labelledby="pagadas-tab" aria-expanded="false">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Servicio</th>
+                    <th scope="col" class="text-center">Monto</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  @foreach($user->facturasPagadas as $factura)
+                    <tr>
+                      <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>
+                        @if($factura->hasServicio())
+                          <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
+                            {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
+                          </a>
+                        @endif
+                      </td>
+                      <td>{{ $factura->monto() }}</td>
+                      <td>{!! $factura->status() !!}</td>
+                      <td>
+                        <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
+                          <i class="fa fa-search"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div><!-- .tab-pane -->
+
+            <div id="rechazadas" class="tab-pane fade" role="tabpanel" aria-labelledby="rechazadas-tab" aria-expanded="false">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Servicio</th>
+                    <th scope="col" class="text-center">Monto</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  @foreach($user->facturasRechazadas as $factura)
+                    <tr>
+                      <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>
+                        @if($factura->hasServicio())
+                          <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
+                            {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
+                          </a>
+                        @endif
+                      </td>
+                      <td>{{ $factura->monto() }}</td>
+                      <td>{!! $factura->status() !!}</td>
+                      <td>
+                        <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
+                          <i class="fa fa-search"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div><!-- .tab-pane -->
+          </div><!-- .tab-content -->
+        </div><!-- .card-body -->
       </div>
     </div>
   </div>

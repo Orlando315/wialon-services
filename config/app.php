@@ -174,6 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\FlowIntegrationProvider::class,
 
     ],
 
@@ -224,6 +225,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Wialon' => App\Integrations\Wialon::class,
+        'Flow' => App\Integrations\Flow\Flow::class,
 
     ],
 
