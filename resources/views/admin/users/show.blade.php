@@ -122,6 +122,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -132,6 +133,7 @@
                   @foreach($user->facturasPendientes as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
@@ -157,6 +159,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -167,6 +170,7 @@
                   @foreach($user->facturasPagadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
@@ -192,6 +196,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -202,6 +207,7 @@
                   @foreach($user->facturasRechazadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">

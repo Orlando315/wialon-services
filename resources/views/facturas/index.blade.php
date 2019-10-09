@@ -34,7 +34,7 @@
       <div class="card card-dropdown-tabs">
         <div class="card-header">
           <h4 class="card-title">
-            <i class="fa fa-list-ul"></i> Facturas
+            <i class="fa fa-list-alt"></i> Facturas
           </h4>
         </div>
         <div class="card-body">
@@ -55,6 +55,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -65,11 +66,14 @@
                   @foreach($pendientes as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
                             {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
                           </a>
+                        @else
+                          -
                         @endif
                       </td>
                       <td>{{ $factura->monto() }}</td>
@@ -90,6 +94,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -100,11 +105,14 @@
                   @foreach($pagadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
                             {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
                           </a>
+                        @else
+                          -
                         @endif
                       </td>
                       <td>{{ $factura->monto() }}</td>
@@ -125,6 +133,7 @@
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha</th>
                     <th scope="col" class="text-center">Servicio</th>
                     <th scope="col" class="text-center">Monto</th>
                     <th scope="col" class="text-center">Status</th>
@@ -135,11 +144,14 @@
                   @foreach($rechazadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
+                      <td>{{ $factura->created_at }}</td>
                       <td>
                         @if($factura->hasServicio())
                           <a href="{{ route('servicios.show', ['servicio' => $factura->servicio_id]) }}">
                             {{ $factura->servicio->alias ?? 'Servicio #'.$factura->servicio_id }}
                           </a>
+                        @else
+                          -
                         @endif
                       </td>
                       <td>{{ $factura->monto() }}</td>
