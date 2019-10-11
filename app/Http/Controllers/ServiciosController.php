@@ -26,7 +26,7 @@ class ServiciosController extends Controller
      */
     public function create()
     {
-      return view('servicios.create');
+      return redirect()->route('suscripciones.planes');
     }
 
     /**

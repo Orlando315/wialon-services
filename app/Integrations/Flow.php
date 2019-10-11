@@ -3,7 +3,7 @@
  * Integration with FLow API v3.0.1
  *
  */
-namespace App\Integrations\Flow;
+namespace App\Integrations;
 
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Illuminate\Support\Facades\App;

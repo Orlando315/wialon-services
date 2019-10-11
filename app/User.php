@@ -121,6 +121,11 @@ class User extends Authenticatable
       return false;
     }
 
+    public function isCustomer()
+    {
+      return $this->customerId !== null;
+    }
+
     /**
      * Obtener las Facturas pendientes de Pago
      */

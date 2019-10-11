@@ -36,6 +36,14 @@
                 <p>Usuarios</p>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.planes.index') }}">
+                <i class="fa fa-list-ul"></i>
+                <p>Planes</p>
+              </a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="{{ route('admin.facturas.index') }}">
                 <i class="fa fa-list-alt"></i>
@@ -55,6 +63,13 @@
               <a class="nav-link" href="{{ route('facturas.index') }}">
                 <i class="fa fa-list-alt"></i>
                 <p>Facturas</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('pagos.index') }}">
+                <i class="fa fa-credit-card"></i>
+                <p>Pagos</p>
               </a>
             </li>
           </ul>
@@ -78,7 +93,7 @@
               <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
-                  <a href="{{ route('servicios.create') }}" class="nav-link" rel="tooltip" title="Agregar servicio">
+                  <a href="{{ route('suscripciones.planes') }}" class="nav-link" rel="tooltip" title="Agregar servicio">
                     <i class="fa fa-plus" aria-hidden="true"></i> Agregar servicio
                   </a>
                 </li>

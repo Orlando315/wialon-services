@@ -26,6 +26,10 @@ class RepetidoresController extends Controller
      */
     public function create(Servicio $servicio)
     {
+      if(!$servicio->active){
+        return redirect()->route('servicios.show', ['servicio' => $servicio->id]);
+      }
+
       return view('servicios.repetidores.create', compact('servicio'));
     }
 

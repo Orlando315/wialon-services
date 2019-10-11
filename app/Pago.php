@@ -51,6 +51,38 @@ class Pago extends Model
       return $this->belongsTo('App\User');
     }
 
+    /**
+     * Obtener la Facurta a la que pertenece el Pago
+     */
+    public function factura()
+    {
+      return $this->belongsTo('App\Factura');
+    }
+
+    /**
+     * Obtener el Invoice al que pertenece el pago
+     */
+    public function invoice()
+    {
+      return $this->belongsTo('App\SuscripcionInvoice', 'invoice_id');
+    }
+
+    /**
+     * Obtener el Servicio al que pertenece el Pago
+     */
+    public function servicio()
+    {
+      return $this->invoice->suscripcion->servicio;
+    }
+
+    /**
+     * Obtener el Plan al que pertenece el Pago
+     */
+    public function plan()
+    {
+      return $this->invoice->suscripcion->plan;
+    }
+
     /*
      * Obtener el status de la Factura
      */
@@ -90,5 +122,19 @@ class Pago extends Model
     public function balance()
     {
       return number_format($this->balance, 0, ',', '.');
+    }
+
+    /**
+     * Obtener los Pagos de Facturas
+     */
+    public static function facturas(){
+      return Pago::where('invoice_id', null)->get();
+    }
+
+    /**
+     * Obtener los Pagos de Suscripciones
+     */
+    public static function suscripciones(){
+      return Pago::where('factura_id', null)->get();
     }
 }

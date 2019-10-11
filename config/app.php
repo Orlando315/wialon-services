@@ -225,7 +225,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Wialon' => App\Integrations\Wialon::class,
-        'Flow' => App\Integrations\Flow\Flow::class,
+        'Flow' => App\Integrations\Flow::class,
 
     ],
 

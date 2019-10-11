@@ -17,7 +17,10 @@ class PagosControllers extends Controller
      */
     public function index()
     {
-        //
+      $facturas = Pago::facturas();
+      $suscripciones = Pago::suscripciones();
+
+      return view('pagos.index', compact('facturas', 'suscripciones'));
     }
 
     /**
@@ -78,7 +81,6 @@ class PagosControllers extends Controller
         ]);
 
         if($response && in_array($response->status, [1, 2])){
-
           $pago->fill([
             'payment_date' => $response->paymentData->date,
             'medio' => $response->paymentData->media,
@@ -88,15 +90,9 @@ class PagosControllers extends Controller
             'balance' => $response->paymentData->balance,
             'transfer_date' => $response->paymentData->transferDate,
           ]);
-
-          $factura->pago()->save($pago);
           $factura->status = true;
-          $factura->save();
-
         }else{
-          $factura->pago()->save($pago);
           $factura->status = false;
-          $factura->save();
 
           $data = [
             'flash_class'   => 'alert-danger',
@@ -104,6 +100,9 @@ class PagosControllers extends Controller
             'flash_important' => true,
           ];
         }
+
+        $factura->pago()->save($pago);
+        $factura->save();
       }
 
       if(Auth::check()){

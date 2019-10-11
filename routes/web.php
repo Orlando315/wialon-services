@@ -18,6 +18,8 @@ Auth::routes();
 
 /* --- Confirmacion de Pago Flow --- */
 Route::post('pagos/flow/confirmation', 'PagosControllers@confirmation')->name('pagos.confirmation');
+/* --- Confirmacion de Suscripcion Flow --- */
+Route::post('suscripciones/flow/confirmation', 'SuscripcionesControllers@confirmation')->name('suscripciones.confirmation');
 
 /* --- Solo usuarios autenticados --- */
 Route::group(['middleware' => 'auth'], function (){
@@ -32,13 +34,14 @@ Route::group(['middleware' => 'auth'], function (){
   /* --- Servicios --- */
   Route::resource('servicios', 'ServiciosController')
   ->except([
-    'show'
+    'show',
+    'create',
   ]);
   Route::get('servicios/{servicio}/{repetidor?}', 'ServiciosController@show')->name('servicios.show');
 
   /* --- repetidores --- */
   Route::get('repetidores/{servicio}/create/', 'RepetidoresController@create')->name('repetidores.create');
-  Route::post('repetidores/{servicio}/create/', 'RepetidoresController@store')->name('repetidores.store');
+  Route::post('repetidores/{servicio}/', 'RepetidoresController@store')->name('repetidores.store');
   Route::get('repetidores/{repetidor}/logs', 'RepetidoresController@logs')->name('repetidores.logs');
   Route::resource('repetidores', 'RepetidoresController')
   ->except([
@@ -52,6 +55,14 @@ Route::group(['middleware' => 'auth'], function (){
   /* --- Logs --- */
   Route::get('logs', 'LogsController@index')->name('logs.index');
   Route::post('logs/{servicio}/{type}', 'LogsController@logsByType');
+
+  /* --- Suscripciones --- */
+  Route::get('suscripciones/subscribe/{plan}/{servicio?}', 'SuscripcionesControllers@subscribe')->name('suscripciones.subscribe');
+  Route::get('suscripciones/planes/{servicio?}', 'SuscripcionesControllers@planes')->name('suscripciones.planes');
+  Route::post('suscripciones/{servicio}/cancel', 'SuscripcionesControllers@cancel')->name('suscripciones.cancel');
+
+  /* --- Pagos --- */
+  Route::get('pagos', 'PagosControllers@index')->name('pagos.index');
 
   /* --- Tokens --- */
   Route::resource('tokens', 'TokensController')
@@ -71,6 +82,12 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('users', 'UsersControllers');
     Route::post('users/{user}/get/servicios', 'UsersControllers@servicios');
     Route::patch('users/{user}/password', 'UsersControllers@password')->name('users.password');
+
+    /* --- Planes --- */
+    Route::resource('planes', 'PlanesControllers')
+    ->parameters([
+      'planes' => 'plan'
+    ]);
 
     /* --- Facturas --- */
     Route::resource('facturas', 'FacturasControllers')

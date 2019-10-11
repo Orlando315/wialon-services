@@ -17,7 +17,7 @@
           <div class="card-header">
             <h4 class="card-title text-center">
               <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
-                {{ $servicio->alias ?? $servicio->wialon }}
+                {{ $servicio->alias() }}
               </a>
             </h4>
             <p class="card-category text-center{{ $servicio->wialon ? '' : ' text-danger' }}">{{ $servicio->wialon ? '' : '-NO HAY TOKEN REGISTRADO-' }}</p>

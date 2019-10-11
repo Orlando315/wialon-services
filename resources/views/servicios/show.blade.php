@@ -14,7 +14,43 @@
       <button class="btn btn-fill btn-danger" data-toggle="modal" data-target="#delModal"><i class="fa fa-times" aria-hidden="true"></i> Eliminar</button>
     </div>
   </div>
-  
+
+  @if(!$servicio->active)
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="alert alert-danger alert-important" role="alert">
+          <strong class="text-center">El servicio se encuentra desactivado.</strong>
+          Debe completar el pago por el servicio para que sea activado.
+        </div>
+      </div>
+    </div>
+  @endif
+
+  @if(!$servicio->activeSuscripcion && !$servicio->pendingSuscripcion)
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="alert alert-warning alert-important" role="alert">
+          <strong class="text-center">El servicio no posee una suscripción activa.</strong>
+          Debe suscribirse a un Plan para continuar usando el Servicio.
+          <a href="{{ route('suscripciones.planes', ['servicio' => $servicio->id]) }}">
+            Suscribirse
+          </a>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  @if($servicio->pendingSuscripcion)
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="alert alert-info alert-important" role="alert">
+          <strong class="text-center">El servicio tiene una suscripción pendiente de pago.</strong>
+          Debe realizar el pago de la misma para que el servicio sea activado.
+        </div>
+      </div>
+    </div>
+  @endif
+
   @include('partials.flash')
 
   <div class="row mt-2">
@@ -22,7 +58,9 @@
       <div class="card card-servicio card-dropdown-tabs">
         <div class="card-header">
           <h4 class="card-title">
-            {{ $servicio->alias ?? 'Servicio' }}
+            {{ $servicio->alias() }}
+
+            @if($servicio->active)
             <a class="btn btn-primary btn-fill btn-xs" href="{{ route('repetidores.create', ['servicio' => $servicio->id]) }}" title="Agregar repetidor">
               <i class="fa fa-plus"></i> Agregar repetidor
             </a>
@@ -30,9 +68,13 @@
               <i class="fa fa-file-text-o"></i>
               Logs
             </button>
+            @endif
           </h4>
           <p class="card-category{{ $servicio->wialon ? '' : ' text-danger' }}">Token: {{ $servicio->wialon ?? '-NO HAY TOKEN REGISTRADO-' }}</p>
-          <p class="card-category{{ $servicio->isAboutToExpire() ? ' text-danger' : '' }}">Fecha de expiración aproximada: {{ $servicio->wialon_expiration ?? '-' }}</p>
+
+          @if($servicio->active)
+            <p class="card-category{{ $servicio->isAboutToExpire() ? ' text-danger' : '' }}">Fecha de expiración aproximada: {{ $servicio->wialon_expiration ?? '-' }}</p>
+          @endif
           <hr class="my-1">
         </div>
         <div class="card-body">
@@ -42,6 +84,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" id="api-tab" href="#api" role="tab" data-toggle="tab" aria-controls="api" aria-selected="false"><i class="fa fa-cubes"></i> API Tokens</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="suscripciones-tab" href="#suscripciones" role="tab" data-toggle="tab" aria-controls="suscripciones" aria-selected="false"><i class="fa fa-cube"></i> Suscripción</a>
             </li>
           </ul>
           <div class="tab-content">
@@ -111,7 +156,7 @@
                   </tr>
                 </thead>
                 <tbody class="tbody-tokens">
-                  @foreach(Auth::user()->tokens as $token)
+                  @foreach($servicio->tokens as $token)
                     <tr class="token-{{ $token->id }}">
                       <td scope="row">{{ $token->created_at }}</td>
                       <td class="{{ $token->api_token }}">
@@ -136,6 +181,51 @@
                 </tbody>
               </table>
             </div>
+            <div id="suscripciones" class="tab-pane fade" role="tabpanel" aria-labelledby="suscripciones-tab">
+              <div class="table-responsive">
+                <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">#</th>
+                      <th scope="col" class="text-center">Suscripción</th>
+                      <th scope="col" class="text-center">Inicio</th>
+                      <th scope="col" class="text-center">Fin</th>
+                      <th scope="col" class="text-center">Monto</th>
+                      <th scope="col" class="text-center">Status</th>
+                      <th scope="col" class="text-center">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="tbody-tokens">
+                    @foreach($servicio->suscripciones as $suscripcion)
+                      <tr>
+                        <td scope="row">{{ $loop->index + 1 }}</td>
+                        <td>{{ $suscripcion->plan->nombre }}</td>
+                        <td>{{ $suscripcion->period_start }}</td>
+                        <td class="plan-end">{{ $suscripcion->period_end }}</td>
+                        <td>{{ $suscripcion->plan->precio() }}</td>
+                        <td class="plan-status">{!! $suscripcion->status() !!}</td>
+                        <td class="plan-options">
+                          @if($suscripcion->status)
+                            <div class="dropdown btn-config-dropdown">
+                              <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownSuscripcionLink-{{ $suscripcion->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-cogs"></i>
+                              </button>
+
+                              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownSuscripcionLink-{{ $suscripcion->id }}">
+                                <a class="dropdown-item text-danger" href="#" role="button" data-toggle="modal" data-target="#cancelSuscripcionModal">
+                                  <i class="fa fa-times" aria-hidden="true"></i>
+                                  Cancelar
+                                </a>
+                              </div>
+                            </div>
+                          @endif
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- #suscripciones -->
           </div>
         </div>
       </div>
@@ -344,6 +434,54 @@
       </div>
     </div>
   </div>
+
+  <div id="cancelSuscripcionModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelSuscripcionModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="cancelSuscripcionModalLabel">Cancelar suscripción</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="cancelSuscripcion" method="POST" action="{{ route('suscripciones.cancel', ['servicio' => $servicio->id]) }}">
+            @csrf
+            <p class="text-center">¿Esta seguro que desea Cancelar su suscripción?</p>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="cancel" id="cancel1" value="0" required>
+              <label class="form-check-label" for="cancel1">
+                Inmediatamente
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="cancel" id="cancel2" value="1" required>
+              <label class="form-check-label" for="cancel2">
+                Al final del ciclo actual
+              </label>
+              <small  class="form-text text-muted">
+                La suscripción permanecerá activa hasta la fecha del próximo pago.
+              </small>
+            </div>
+
+            <div class="alert alert-dismissible alert-cancel-plan alert-danger" role="alert" style="display: none">
+              <strong class="text-center">Ha ocurrido un error</strong>
+
+              <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <center>
+              <button id="btn-cancel-suscripcion" class="btn btn-fill btn-danger" type="submit">Eliminar</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </center>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')
@@ -352,6 +490,7 @@
       btnDeleteRepetidor.click(deleteRepetidor)
       btnDeleteToken.click(deleteToken)
       btnGenerateToken.click(generateToken)
+      $('#cancelSuscripcion').submit(cancelSuscripcion)
 
       $('#deleteRepetidorModal').on('show.bs.modal', function (event){
         let repetidor = $(event.relatedTarget).data('repetidor')
@@ -396,7 +535,8 @@
           btnDeleteRepetidor = $('#delete-repetidor'),
           btnDeleteToken = $('#delete-token'),
           btnGenerateToken = $('.btn-generate-token'),
-          alertLogs = $('.alert-logs');
+          alertLogs = $('.alert-logs'),
+          btnCancelSuscripcion = $('#btn-cancel-suscripcion');
 
     let selectedLogs = @json($logs->id),
         logsType     = '{{ $logs->type }}';
@@ -592,6 +732,43 @@
       $(this)
         .attr('data-original-title', 'Copiado!')
         .tooltip('show')
+    }
+
+    function cancelSuscripcion(e){
+      e.preventDefault();
+
+      let url = '{{ route("suscripciones.cancel", ["servicio" => $servicio->id]) }}';
+      let alertCancelPlan = $('.alert-cancel-plan');
+      let cancel = +$('input[name="cancel"]:checked').val()
+
+      btnCancelSuscripcion.prop('disabled', true)
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          _method: 'POST',
+          _token: '{{ @csrf_token() }}',
+          cancel: cancel,
+        },
+        dataType: 'json'
+      })
+      .done(function (response) {
+        if(response){
+          $('.plan-end').first().text(response.end)
+          $('.plan-status').first().html(response.status)
+          $('.plan-options').first().html('')
+          $('#cancelSuscripcionModal').modal('hide')
+        }else{
+          alertCancelPlan.show().delay(5000).hide('slow')
+        }
+      })
+      .fail(function () {
+        alertCancelPlan.show().delay(5000).hide('slow')
+      })
+      .always(function () {
+        btnCancelSuscripcion.prop('disabled', false)
+      })
     }
   </script>
 @endsection

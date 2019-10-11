@@ -61,7 +61,13 @@
   padding: 8px 12px;
 }
 
+.card-plan-servicios .card-header h4{
+  font-size: 18px;
+}
 
+.card-plan-servicios .card-header hr{
+  margin: 5px 0;
+}
 
 /* Fix light-bootstrap-dashboard */
 button:hover{

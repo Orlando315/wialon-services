@@ -79,6 +79,14 @@ class Servicio extends Model
     }
 
     /**
+     * Obtener los Tokens del Servicio
+     */
+    public function tokens()
+    {
+      return $this->hasMany('App\Token');
+    }
+
+    /**
      * Obtener los Logs solo del Servicio. Sin los repetidores
      */
     public function logsAll()
@@ -195,5 +203,63 @@ class Servicio extends Model
     public function status()
     {
       return $this->active ?  '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
+    }
+
+    /**
+     * Obtener las Suscriciones del Servicio
+     */
+    public function suscripciones()
+    {
+      return $this->hasMany('App\Suscripcion');
+    }
+
+    /**
+     * Obtener los Planes a los que esta Suscrito el Servicio
+     */
+    public function planes()
+    {
+      return $this->belongsToMany('App\Plan', 'suscripciones')
+                  ->using('App\Suscripcion')
+                  ->withPivot(
+                    'status',
+                    'subscriptionId',
+                    'subscription_start',
+                    'period_start',
+                    'period_end',
+                    'status_flow',
+                    'response'
+                  );
+    }
+
+    /**
+     * Devolver el Alias del servicio. Si no esta definido, devolver el id
+     */
+    public function alias()
+    {
+      return $this->alias ?? 'Servicio #'.$this->id;
+    }
+
+    /**
+     * Obtener la suscripcion Activa del Servicio
+     */
+    public function activeSuscripcion()
+    {
+      return $this->hasOne('App\Suscripcion')->where('status', true);
+    }
+
+    /**
+     * Obtener la suscripcion Pendiente del Servicio
+     */
+    public function pendingSuscripcion()
+    {
+      return $this->hasOne('App\Suscripcion')->where('status', null);
+    }
+
+    /**
+     * Obtener la ultima Suscricione del Servicio
+     */
+    public function lastSuscripcion()
+    {
+      return $this->hasMany('App\Suscripcion')->latest()->first();
     }
 }

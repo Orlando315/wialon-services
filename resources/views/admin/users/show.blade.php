@@ -71,6 +71,8 @@
             <thead>
               <tr>
                 <th>#</th>
+                <th>Plan</th>
+                <th>Vencimiento</th>
                 <th>Servicio</th>
                 <th>Repetidores</th>
                 <th>Status</th>
@@ -80,6 +82,8 @@
               @foreach($user->servicios as $servicio)
                 <tr>
                   <td scope="row">{{ $loop->index + 1 }}</td>
+                  <td>{{ $servicio->lastSuscripcion() ? $servicio->lastSuscripcion()->plan->nombre : '-' }}</td>
+                  <td>{{ $servicio->lastSuscripcion() ? $servicio->lastSuscripcion()->period_end : '-' }}</td>
                   <td>
                     <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
                       {{ $servicio->alias ?? $servicio->wialon }}
