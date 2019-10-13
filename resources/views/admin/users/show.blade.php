@@ -64,6 +64,10 @@
         <div class="card-header">
           <h4 class="card-title">
             <i class="fa fa-podcast"></i> Servicios
+
+            <a class="btn btn-primary btn-fill btn-xs" href="{{ route('admin.servicios.create', ['user' => $user->id]) }}" title="Agregar servicio">
+              <i class="fa fa-plus"></i> Agregar servicio
+            </a>
           </h4>
         </div>
         <div class="card-body">
@@ -83,10 +87,10 @@
                 <tr>
                   <td scope="row">{{ $loop->index + 1 }}</td>
                   <td>{{ $servicio->lastSuscripcion() ? $servicio->lastSuscripcion()->plan->nombre : '-' }}</td>
-                  <td>{{ $servicio->lastSuscripcion() ? $servicio->lastSuscripcion()->period_end : '-' }}</td>
+                  <td>{{ $servicio->expiration() }}</td>
                   <td>
                     <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
-                      {{ $servicio->alias ?? $servicio->wialon }}
+                      {{ $servicio->alias() }}
                     </a>
                   </td>
                   <td class="text-center">{{ $servicio->repetidores->count() }}</td>

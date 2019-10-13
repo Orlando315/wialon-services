@@ -2,6 +2,13 @@
 
 @section('title','Servicios - '.config('app.name'))
 
+@section('head')
+  @if(Auth::user()->isAdmin())
+    <!-- datepicker -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+  @endif
+@endsection
+
 @section('brand')
   <a class="navbar-brand" href="{{ route('dashboard') }}"> Servicios </a>
 @endsection
@@ -20,19 +27,18 @@
       <div class="col-md-12">
         <div class="alert alert-danger alert-important" role="alert">
           <strong class="text-center">El servicio se encuentra desactivado.</strong>
-          Debe completar el pago por el servicio para que sea activado.
         </div>
       </div>
     </div>
   @endif
 
-  @if(!$servicio->activeSuscripcion && !$servicio->pendingSuscripcion)
+  @if(!$servicio->activeSuscripcion && !$servicio->pendingSuscripcion && !$servicio->expiration)
     <div class="row mt-4">
       <div class="col-md-12">
         <div class="alert alert-warning alert-important" role="alert">
           <strong class="text-center">El servicio no posee una suscripción activa.</strong>
           Debe suscribirse a un Plan para continuar usando el Servicio.
-          <a href="{{ route('suscripciones.planes', ['servicio' => $servicio->id]) }}">
+          <a class="alert-link" href="{{ route('suscripciones.planes', ['servicio' => $servicio->id]) }}">
             Suscribirse
           </a>
         </div>
@@ -71,10 +77,15 @@
             @endif
           </h4>
           <p class="card-category{{ $servicio->wialon ? '' : ' text-danger' }}">Token: {{ $servicio->wialon ?? '-NO HAY TOKEN REGISTRADO-' }}</p>
+          <p class="card-category{{ $servicio->isAboutToExpire() ? ' text-danger' : '' }}">Fecha de expiración aproximada del Token: {{ $servicio->wialon_expiration ?? '-' }}</p>
 
-          @if($servicio->active)
-            <p class="card-category{{ $servicio->isAboutToExpire() ? ' text-danger' : '' }}">Fecha de expiración aproximada: {{ $servicio->wialon_expiration ?? '-' }}</p>
-          @endif
+          <p class="card-category text-info">Expiración del Servicio: {{ $servicio->expiration() }}
+            @if(Auth::user()->isAdmin())
+              <button class="btn btn-success btn-fill btn-xs" title="Editar fecha de expiración" data-toggle="modal" data-target="#expirationModal">
+                <i class="fa fa-pencil"></i> Editar expiración
+              </button>
+            @endif
+          </p>
           <hr class="my-1">
         </div>
         <div class="card-body">
@@ -182,6 +193,12 @@
               </table>
             </div>
             <div id="suscripciones" class="tab-pane fade" role="tabpanel" aria-labelledby="suscripciones-tab">
+              @if(!$servicio->activeSuscripcion && !$servicio->pendingSuscripcion)
+                <a class="btn btn-primary btn-fill btn-xs my-2" href="{{ route('suscripciones.planes', ['servicio' => $servicio->id]) }}" title="Agregar suscripción">
+                  <i class="fa fa-plus"></i> Agregar suscripción
+                </a>
+              @endif
+
               <div class="table-responsive">
                 <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
                   <thead>
@@ -474,7 +491,7 @@
             </div>
 
             <center>
-              <button id="btn-cancel-suscripcion" class="btn btn-fill btn-danger" type="submit">Eliminar</button>
+              <button id="btn-cancel-suscripcion" class="btn btn-fill btn-danger" type="submit">Cencelar suscripción</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </center>
           </form>
@@ -482,9 +499,81 @@
       </div>
     </div>
   </div>
+
+  @if(Auth::user()->isAdmin())
+    <div id="expirationModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="expirationModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="expirationModalLabel">Editar fecha de expiración</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{{ route('admin.servicios.expiration', ['servicio' => $servicio->id]) }}">
+              @csrf
+              @method('PATCH')
+
+              <p class="text-center">Si hay una suscripción activa, se tomará en cuenta solo la fecha de expiración de la suscripción.</p>
+
+              <div class="form-group">
+                <label class="control-label" for="expiracion">Fecha de expiración:</label>
+                <input id="expiracion" class="form-control{{ $errors->has('expiracion') ? ' is-invalid' : '' }}" type="text" name="expiracion" value="{{ old('expiracion') ?? $servicio->formatExpiration() }}" placeholder="Fecha de expiración">
+              </div>
+
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label" for="removeExpiracion">
+                    <input id="removeExpiracion" class="form-check-input" type="checkbox" name="remove_expiration">
+                    <span class="form-check-sign"></span>
+                    Eliminar fecha de expiración
+                  </label>
+                  <small class="form-text text-muted" style="line-height: 1.2">
+                    Esta opción eliminará la fecha de expiración y desactivará el servicio.
+                    </br>
+                    Si hay una suscripción activa, el servicio no será desactivado.
+                  </small>
+                </div>
+              </div>
+
+              @if(count($errors) > 0)
+                <div class="alert alert-danger alert-important">
+                  <ul class="m-0">
+                    @foreach($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                    @endforeach
+                  </ul>
+                </div>
+              @endif
+
+              <center>
+                <button id="btn-cancel-suscripcion" class="btn btn-fill btn-primary" type="submit">Guardar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              </center>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
 @endsection
 
 @section('scripts')
+  @if(Auth::user()->isAdmin())
+    <!-- datepicker -->
+    <script type="text/javascript" src="{{ asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
+    <script type="text/javascript">
+      $(document).ready(function (){
+        $('#expiracion').datepicker({
+          format: 'yyyy-mm-dd',
+          startDate: 'today',
+          language: 'es',
+        });
+      })
+    </script>
+  @endif
   <script type="text/javascript">
     $(document).ready(function (){
       btnDeleteRepetidor.click(deleteRepetidor)
@@ -529,6 +618,11 @@
         $('.span-copy')
           .attr('data-original-title', 'Haz click para copiar!')
       })
+
+      $('#removeExpiracion').change(function(){
+        $('#expiracion').prop('disabled', $(this).is(':checked'))
+      })
+      $('#removeExpiracion').change()
     })
 
     const cardLoading = $('.card-loading'),

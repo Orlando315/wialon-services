@@ -69,6 +69,43 @@
   margin: 5px 0;
 }
 
+/* datepicker */
+.datepicker {
+  font-size: 0.875em;
+}
+.datepicker td, .datepicker th {
+  width: 1.5em;
+  height: 1.5em;
+}
+.datepicker.dropdown-menu{
+ visibility: visible;
+ opacity: 1; 
+}
+.datepicker table tr td.active.active,
+.datepicker table tr td.active.highlighted.active,
+.datepicker table tr td.active.highlighted:active,
+.datepicker table tr td.active:active {
+  color: #fff;
+  background-color: #3472F7 !important;
+  border-color: #3472F7 !important;
+}
+.datepicker table tr td.active.active.focus,
+.datepicker table tr td.active.active:focus,
+.datepicker table tr td.active.active:hover,
+.datepicker table tr td.active.highlighted.active.focus,
+.datepicker table tr td.active.highlighted.active:focus,
+.datepicker table tr td.active.highlighted.active:hover,
+.datepicker table tr td.active.highlighted:active.focus,
+.datepicker table tr td.active.highlighted:active:focus,
+.datepicker table tr td.active.highlighted:active:hover,
+.datepicker table tr td.active:active.focus,
+.datepicker table tr td.active:active:focus,
+.datepicker table tr td.active:active:hover {
+  color: #fff;
+  background-color: #1D62F0 !important;
+  border-color: #1D62F0 !important;
+}
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;
@@ -115,4 +152,12 @@ h1, h2, h3, h4, h5{
 }
 button:disabled:hover{
   cursor: default;
+}
+
+/* Check en modal de editar expiracion */
+#expirationModal .form-check .form-check-sign::before, .form-check .form-check-sign::after {
+  margin-top: 0;
+}
+#expirationModal .form-check .form-check-label {
+  padding-left: 0;
 }

@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('tokens:expire')
                  ->dailyAt('10:00');
+
+        $schedule->command('servicios:expire')
+                 ->dailyAt('00:01');
     }
 
     /**

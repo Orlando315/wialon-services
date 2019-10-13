@@ -83,6 +83,11 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('users/{user}/get/servicios', 'UsersControllers@servicios');
     Route::patch('users/{user}/password', 'UsersControllers@password')->name('users.password');
 
+    /* --- Servicios --- */
+    Route::get('servicios/{user}/create', 'ServiciosController@create')->name('servicios.create');
+    Route::post('servicios/{user}/store', 'ServiciosController@store')->name('servicios.store');
+    Route::patch('servicios/{servicio}/expiration', 'ServiciosController@expiration')->name('servicios.expiration');
+
     /* --- Planes --- */
     Route::resource('planes', 'PlanesControllers')
     ->parameters([

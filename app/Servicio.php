@@ -44,6 +44,15 @@ class Servicio extends Model
     ];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'expiration',
+    ];
+
+    /**
      * Route notifications for the mail channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification
@@ -261,5 +270,21 @@ class Servicio extends Model
     public function lastSuscripcion()
     {
       return $this->hasMany('App\Suscripcion')->latest()->first();
+    }
+
+    /**
+     * Obtener la fecha de expiracion del Servicio
+     */
+    public function expiration()
+    {
+      return $this->lastSuscripcion() ? $this->lastSuscripcion()->period_end : $this->expiration ?? '-';
+    }
+
+    /**
+     * Obtener solo la fecha de expiracion del Servicio sin la hora
+     */
+    public function formatExpiration()
+    {
+      return $this->expiration ? $this->expiration->format('Y-m-d') : null;
     }
 }
