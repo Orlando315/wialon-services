@@ -79,7 +79,7 @@
     <div class="col-md-9">
       <div class="card">
         <div class="card-body">
-          <table class="table data-table">
+          <table class="table data-table table-bordered table-striped table-hover" style="width: 100%">
             <thead>
               <tr>
                 <th>#</th>

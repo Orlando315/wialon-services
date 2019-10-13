@@ -13,7 +13,7 @@
   <div class="row">
     @foreach(Auth::user()->servicios as $servicio)
       <div class="col-md-6">
-        <div class="card table-with-links">
+        <div class="card table-with-links card-servicio">
           <div class="card-header">
             <h4 class="card-title text-center">
               <a href="{{ route('servicios.show', ['servicio' => $servicio->id]) }}" title="">
@@ -38,11 +38,11 @@
                     <td class="text-center" title="{{ $repetidor->lastMessage() }}">{!! $repetidor->lastStatus() !!}</td>
                     <td>
                       <div class="dropdown btn-config-dropdown">
-                        <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownConfigLink-{{ $repetidor->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn dropdown-toggle btn-fill btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="fa fa-cogs"></i>
                         </button>
 
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
+                        <div class="dropdown-menu dropdown-menu-right">
                           <a class="dropdown-item" href="{{ route('servicios.show', ['servicio' => $repetidor->servicio_id, 'log' => $repetidor->id]) }}"><i class="fa fa-file-text-o"></i> Logs</a>
                           <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
                         </div>

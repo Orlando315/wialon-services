@@ -13,6 +13,8 @@
     <!-- CSS Files -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/light-bootstrap-dashboard.css?v=2.0.0') }}" rel="stylesheet" />
+    <!-- Datatabes -->
+    <link href="{{ asset('js/plugins/datatables/datatables.min.css') }}" rel="stylesheet" />
     <!-- App -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
 
@@ -82,7 +84,7 @@
 
             @yield('brand', '')
 
-            <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-bar burger-lines"></span>
               <span class="navbar-toggler-bar burger-lines"></span>
               <span class="navbar-toggler-bar burger-lines"></span>
@@ -141,12 +143,64 @@
     <script src="{{ asset('js/core/jquery.3.2.1.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/core/popper.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/core/bootstrap.min.js') }}" type="text/javascript"></script>
+    <!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
+    <script src="{{ asset('js/light-bootstrap-dashboard.js?v=2.0.0') }}" type="text/javascript"></script>
     <!--  Notifications Plugin    -->
     <script src="{{ asset('js/plugins/bootstrap-notify.js') }}"></script>
+    <!-- Data-table -->
+    <script src="{{ asset('js/plugins/datatables/datatables.min.js') }}" type="text/javascript"></script>
 
     <script type="text/javascript">
       $(document).ready(function(){
         $('div.alert').not('.alert-important').delay(7000).slideUp(300);
+
+        $('.data-table').DataTable({
+          responsive: true,
+          language: {
+            url:'{{ asset("js/plugins/datatables/spanish.json") }}'
+          },
+          pageLength: 25
+        });
+
+        $('.data-table-no-responsive').DataTable({
+          language: {
+            url:'{{ asset("js/plugins/datatables/spanish.json") }}'
+          },
+          pageLength: 25
+        });
+
+        jQuery.fn.hasHScrollBar = function(){
+          return this.get(0).scrollWidth > this.innerWidth();
+        }
+
+        $('.table-responsive .dropdown').on('show.bs.dropdown', function (e) {
+          var $table = $(this).closest('.table-responsive');
+          if(!$table.hasHScrollBar()){
+            $('.table-responsive').css('overflow', 'visible');
+          }
+        });
+
+        $('.table-responsive .dropdown').on('shown.bs.dropdown', function (e) {
+          var $table = $(this).closest('.table-responsive');
+
+          if($table.hasHScrollBar()){
+            var $menu = $(this).find('.dropdown-menu'),
+            tableOffsetHeight = $table.offset().top + $table.height(),
+            menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+            if (menuOffsetHeight > tableOffsetHeight)
+              $table.css('padding-bottom', menuOffsetHeight - tableOffsetHeight + 15);
+          }
+
+        });
+
+        $('.table-responsive .dropdown').on('hide.bs.dropdown', function () {
+          $(this).closest('.table-responsive').css({'padding-bottom':'', 'overflow':''});
+        })
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+          $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+        });
       })
     </script>
 

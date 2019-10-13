@@ -71,7 +71,7 @@
           </h4>
         </div>
         <div class="card-body">
-          <table class="table data-table table-bordered table-striped">
+          <table class="table data-table table-bordered table-striped table-hover">
             <thead>
               <tr>
                 <th>#</th>

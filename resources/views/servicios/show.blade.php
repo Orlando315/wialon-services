@@ -102,45 +102,47 @@
           </ul>
           <div class="tab-content">
             <div id="repetidores" class="tab-pane fade show active" role="tabpanel" aria-labelledby="repetidores-tab">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
-                <thead>
-                  <tr>
-                    <th scope="col" class="text-center">#</th>
-                    <th scope="col" class="text-center">Servicio</th>
-                    <th scope="col" class="text-center">Alias</th>
-                    <th scope="col" class="text-center">token</th>
-                    <th scope="col" class="text-center">endpoint</th>
-                    <th scope="col" class="text-center">Acción</th>
-                  </tr>
-                </thead>
-                <tbody class="">
-                  @foreach($servicio->repetidores as $repetidor)
-                    <tr class="repetidor-{{ $repetidor->id }}">
-                      <td scope="row">{{ $loop->index + 1 }}</td>
-                      <td>{{ $repetidor->servicio }}</td>
-                      <td>{{ $repetidor->alias }}</td>
-                      <td title="{{ $repetidor->token }}">{{ $repetidor->token }}</td>
-                      <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
-                      <td>
-                        <div class="dropdown btn-config-dropdown">
-                          <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownConfigLink-{{ $repetidor->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-cogs"></i>
-                          </button>
-
-                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
-                            <a class="dropdown-item btn-load-logs" href="#" data-repetidor="{{ $repetidor->id }}"><i class="fa fa-file-text-o"></i> Logs</a>
-                            <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
-                            <a class="dropdown-item text-danger" href="#" role="button" data-repetidor="{{ $repetidor->id }}" data-toggle="modal" data-target="#deleteRepetidorModal">
-                              <i class="fa fa-times" aria-hidden="true"></i>
-                              Eliminar
-                            </a>
-                          </div>
-                        </div>
-                      </td>
+              <div class="table-responsive">
+                <table class="table data-table-no-responsive table-striped table-bordered table-hover table-sm" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">#</th>
+                      <th scope="col" class="text-center">Servicio</th>
+                      <th scope="col" class="text-center">Alias</th>
+                      <th scope="col" class="text-center">token</th>
+                      <th scope="col" class="text-center">endpoint</th>
+                      <th scope="col" class="text-center">Acción</th>
                     </tr>
-                  @endforeach
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    @foreach($servicio->repetidores as $repetidor)
+                      <tr class="repetidor-{{ $repetidor->id }}">
+                        <td scope="row">{{ $loop->index + 1 }}</td>
+                        <td>{{ $repetidor->servicio }}</td>
+                        <td>{{ $repetidor->alias }}</td>
+                        <td title="{{ $repetidor->token }}">{{ $repetidor->token }}</td>
+                        <td title="{{ $repetidor->endpoint }}">{{ $repetidor->endpoint }}</td>
+                        <td>
+                          <div class="dropdown btn-config-dropdown">
+                            <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownConfigLink-{{ $repetidor->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-cogs"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownConfigLink-{{ $repetidor->id }}">
+                              <a class="dropdown-item btn-load-logs" href="#" data-repetidor="{{ $repetidor->id }}"><i class="fa fa-file-text-o"></i> Logs</a>
+                              <a class="dropdown-item" href="{{ route('repetidores.edit', ['repetidor' => $repetidor->id]) }}"><i class="fa fa-pencil"></i> Editar</a>
+                              <a class="dropdown-item text-danger" href="#" role="button" data-repetidor="{{ $repetidor->id }}" data-toggle="modal" data-target="#deleteRepetidorModal">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Eliminar
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div id="api" class="tab-pane fade" role="tabpanel" aria-labelledby="api-tab">
               <button class="btn btn-primary btn-fill btn-xs btn-generate-token my-2" title="Generar token">
@@ -158,39 +160,41 @@
                 </button>
               </div>
 
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
-                <thead>
-                  <tr>
-                    <th scope="col" class="text-center">Creado</th>
-                    <th scope="col" class="text-center">Token</th>
-                    <th scope="col" class="text-center">Acción</th>
-                  </tr>
-                </thead>
-                <tbody class="tbody-tokens">
-                  @foreach($servicio->tokens as $token)
-                    <tr class="token-{{ $token->id }}">
-                      <td scope="row">{{ $token->created_at }}</td>
-                      <td class="{{ $token->api_token }}">
-                        <span class="span-copy badge badge-secondary" data-toggle="tooltip" title="Haz click para copiar!">{{ $token->token }}</span>
-                      </td>
-                      <td>
-                        <div class="dropdown btn-config-dropdown">
-                          <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownApiLink-{{ $token->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-cogs"></i>
-                          </button>
-
-                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownApiLink-{{ $token->id }}">
-                            <a class="dropdown-item text-danger" href="#" role="button" data-token="{{ $token->id }}" data-toggle="modal" data-target="#deleteTokenModal">
-                              <i class="fa fa-times" aria-hidden="true"></i>
-                              Eliminar
-                            </a>
-                          </div>
-                        </div>
-                      </td>
+              <div class="table-responsive">
+                <table class="table data-table-no-responsive table-striped table-bordered table-hover table-sm" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Creado</th>
+                      <th scope="col" class="text-center">Token</th>
+                      <th scope="col" class="text-center">Acción</th>
                     </tr>
-                  @endforeach
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody class="tbody-tokens">
+                    @foreach($servicio->tokens as $token)
+                      <tr class="token-{{ $token->id }}">
+                        <td scope="row">{{ $token->created_at }}</td>
+                        <td class="{{ $token->api_token }}">
+                          <span class="span-copy badge badge-secondary" data-toggle="tooltip" title="Haz click para copiar!">{{ $token->token }}</span>
+                        </td>
+                        <td>
+                          <div class="dropdown btn-config-dropdown">
+                            <button class="btn dropdown-toggle btn-fill btn-sm" type="button" id="dropdownApiLink-{{ $token->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-cogs"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownApiLink-{{ $token->id }}">
+                              <a class="dropdown-item text-danger" href="#" role="button" data-token="{{ $token->id }}" data-toggle="modal" data-target="#deleteTokenModal">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Eliminar
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div id="suscripciones" class="tab-pane fade" role="tabpanel" aria-labelledby="suscripciones-tab">
               @if(!$servicio->activeSuscripcion && !$servicio->pendingSuscripcion)
@@ -200,7 +204,7 @@
               @endif
 
               <div class="table-responsive">
-                <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+                <table class="table data-table-no-responsive table-striped table-bordered table-hover table-sm" style="width: 100%">
                   <thead>
                     <tr>
                       <th scope="col" class="text-center">#</th>
@@ -285,7 +289,7 @@
           <div class="tab-content">
             <div id="logs-all" class="tab-pane fade active show" role="tabpanel" aria-labelledby="all-tab" aria-expanded="true">
               <div class="table-responsive">
-                <table class="table table-sm table-striped table-hover table-bordered">
+                <table class="table table-sm data-table-no-responsive table-striped table-hover table-bordered">
                   <thead>
                     <tr>
                       <th scope="col" class="text-center">Fecha</th>
@@ -311,7 +315,7 @@
             </div>
             <div id="logs-success" class="tab-pane fade" role="tabpanel" aria-labelledby="success-tab" aria-expanded="false">
               <div class="table-responsive">
-                <table class="table table-sm table-striped table-hover table-bordered">
+                <table class="table table-sm data-table-no-responsive table-striped table-hover table-bordered">
                   <thead>
                     <tr>
                       <th scope="col" class="text-center">Fecha</th>
@@ -333,7 +337,7 @@
             </div>
             <div id="logs-error" class="tab-pane fade" role="tabpanel" aria-labelledby="error-tab" aria-expanded="false">
               <div class="table-responsive">
-                <table class="table table-sm table-striped table-hover table-bordered">
+                <table class="table table-sm data-table-no-responsive table-striped table-hover table-bordered">
                   <thead>
                     <tr>
                       <th scope="col" class="text-center">Fecha</th>

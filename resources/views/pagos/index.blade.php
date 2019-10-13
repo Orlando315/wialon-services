@@ -48,7 +48,7 @@
           </ul>
           <div class="tab-content">
             <div id="facturas" class="tab-pane fade show active" role="tabpanel" aria-labelledby="facturas-tab">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
@@ -82,7 +82,7 @@
             </div><!-- .tab-pane -->
 
             <div id="suscripciones" class="tab-pane fade" role="tabpanel" aria-labelledby="suscripciones-tab" aria-expanded="false">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>

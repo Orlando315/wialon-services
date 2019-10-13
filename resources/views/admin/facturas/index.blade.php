@@ -34,7 +34,7 @@
       <div class="card card-dropdown-tabs">
         <div class="card-header">
           <h4 class="card-title">
-            <i class="fa fa-list-ul"></i> Facturas
+            <i class="fa fa-list-alt"></i> Facturas
             <span class="float-right">
               <a class="btn btn-success" href="{{ route('admin.facturas.create') }}"><i class="fa fa-plus" aria-hidden="true"></i> Factura</a>
             </span>
@@ -54,7 +54,7 @@
           </ul>
           <div class="tab-content">
             <div id="pendientes" class="tab-pane fade show active" role="tabpanel" aria-labelledby="pendientes-tab">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
@@ -65,7 +65,7 @@
                     <th scope="col" class="text-center">Acción</th>
                   </tr>
                 </thead>
-                <tbody class="text-center">
+                <tbody>
                   @foreach($pendientes as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
@@ -81,9 +81,9 @@
                           </a>
                         @endif
                       </td>
-                      <td>{{ $factura->monto() }}</td>
-                      <td>{!! $factura->status() !!}</td>
-                      <td>
+                      <td class="text-right">{{ $factura->monto() }}</td>
+                      <td class="text-center">{!! $factura->status() !!}</td>
+                      <td class="text-center">
                         <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
                           <i class="fa fa-search"></i>
                         </a>
@@ -95,7 +95,7 @@
             </div><!-- .tab-pane -->
 
             <div id="pagadas" class="tab-pane fade" role="tabpanel" aria-labelledby="pagadas-tab" aria-expanded="false">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
@@ -106,7 +106,7 @@
                     <th scope="col" class="text-center">Acción</th>
                   </tr>
                 </thead>
-                <tbody class="text-center">
+                <tbody>
                   @foreach($pagadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
@@ -122,9 +122,9 @@
                           </a>
                         @endif
                       </td>
-                      <td>{{ $factura->monto() }}</td>
-                      <td>{!! $factura->status() !!}</td>
-                      <td>
+                      <td class="text-right">{{ $factura->monto() }}</td>
+                      <td class="text-center">{!! $factura->status() !!}</td>
+                      <td class="text-center">
                         <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
                           <i class="fa fa-search"></i>
                         </a>
@@ -136,7 +136,7 @@
             </div><!-- .tab-pane -->
 
             <div id="rechazadas" class="tab-pane fade" role="tabpanel" aria-labelledby="rechazadas-tab" aria-expanded="false">
-              <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+              <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
@@ -147,7 +147,7 @@
                     <th scope="col" class="text-center">Acción</th>
                   </tr>
                 </thead>
-                <tbody class="text-center">
+                <tbody>
                   @foreach($rechazadas as $factura)
                     <tr>
                       <td scope="row">{{ $loop->index + 1 }}</td>
@@ -163,9 +163,9 @@
                           </a>
                         @endif
                       </td>
-                      <td>{{ $factura->monto() }}</td>
-                      <td>{!! $factura->status() !!}</td>
-                      <td>
+                      <td class="text-right">{{ $factura->monto() }}</td>
+                      <td class="text-center">{!! $factura->status() !!}</td>
+                      <td class="text-center">
                         <a class="btn btn-primary btn-link btn-sm" href="{{ route('facturas.show', ['factura' => $factura->id] )}}">
                           <i class="fa fa-search"></i>
                         </a>

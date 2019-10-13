@@ -41,7 +41,7 @@
           </h4>
         </div>
         <div class="card-body">
-          <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+          <table class="table data-table table-striped table-bordered table-hover table-sm" style="width: 100%">
             <thead>
               <tr>
                 <th scope="col" class="text-center">#</th>
