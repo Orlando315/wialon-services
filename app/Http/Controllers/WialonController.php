@@ -65,7 +65,7 @@ class WialonController extends Controller
         $data = json_encode(['posicion' => $info]);
 
         foreach ($repetidores as $repetidor) {
-          $curl = curl_init('http://ei.wisetrack.cl/API/Centinela/' . $repetidor->endpoint);
+          $curl = curl_init('http://ei.wisetrack.cl/API/' . $repetidor->endpoint);
 
           curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
           curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type:application/json', 'Authorization: Bearer ' . $repetidor->token]);

@@ -44,7 +44,7 @@ class RepetidoresController extends Controller
       $this->validate($request, [
         'alias' => 'nullable|string|max:50',
         'token' => 'required|string|min:30|max:50',
-        'endpoint' => 'required|string|max:30',
+        'endpoint' => 'required|string|max:50',
       ]);
 
       $repetidor = new Repetidor($request->all());
@@ -98,7 +98,7 @@ class RepetidoresController extends Controller
       $this->validate($request, [
         'alias' => 'nullable|string|max:50',
         'token' => 'required|string|min:30|max:50',
-        'endpoint' => 'required|string|max:30',
+        'endpoint' => 'required|string|max:50',
       ]);
 
       $repetidor->fill($request->all());

@@ -30,8 +30,8 @@
 
               <div class="form-group">
                 <label class="control-label" for="endpoint">Endpoint: *</label>
-                <input id="endpoint" class="form-control{{ $errors->has('endpoint') ? ' is-invalid' : '' }}" type="text" name="endpoint" pattern="[a-zA-z]{5,30}" maxlength="30" value="{{ old('endpoint') ?? $repetidor->endpoint }}" placeholder="InsertaPosicion" required>
-                <small class="form-text text-muted">http://ei.wisetrack.cl/API/Centinela/: <strong>endpoint</strong></small>
+                <input id="endpoint" class="form-control{{ $errors->has('endpoint') ? ' is-invalid' : '' }}" type="text" name="endpoint" pattern="[a-zA-z]{5,30}" maxlength="30" value="{{ old('endpoint') ?? $repetidor->endpoint }}" placeholder="Centinela/InsertaPosicion" required>
+                <small class="form-text text-muted">http://ei.wisetrack.cl/API/: <strong>endpoint</strong></small>
               </div>
 
               @if(count($errors) > 0)
